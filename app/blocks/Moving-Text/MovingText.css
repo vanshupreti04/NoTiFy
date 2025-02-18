@@ -1,0 +1,68 @@
+@font-face {
+    font-family: 'FuturaCondensedLight';
+    src: url('/assets/fonts/Futura-CondensedLight.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#moving-text {
+    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    width: 100%;
+    
+}
+
+.moving-wrapper {
+    display: flex;
+    width: max-content;
+    animation: moveText 25s linear infinite;
+}
+
+.moving-container {
+    display: flex;
+    align-items: center;
+    gap: 2vw; /* Adjust spacing between words */
+    width: max-content; /* Allows continuous scrolling */
+}
+
+.moving-container h1 {
+    font-size: 8vw;
+    font-weight: bold;
+    margin: 0;
+    white-space: nowrap;
+    display: inline-block;
+    font-family: 'FuturaCondensedLight', sans-serif;
+    
+    /* Animated Gradient */
+    background: linear-gradient(90deg, #AC6AFF, #C084FF, #D16BFF, #9B5EFF, #7A3FFF);
+    background-size: 300% 300%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove 5s infinite linear;
+}
+
+.circle {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: #fff;
+    display: inline-block;
+}
+
+@keyframes moveText {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%); /* Moves only half so the next set follows */
+    }
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
