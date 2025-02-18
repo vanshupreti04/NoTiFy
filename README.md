@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# NoTiFy - An Open-Source Notion Alternative  
 
-## Getting Started
+An open-source Notion-like application built with **Next.js**, featuring **note-taking, live collaboration, GitHub sync, task management, and offline support**. Developed by **college students** for the **FOSS Hackathon**, it offers a powerful and flexible workspace.  
 
-First, run the development server:
+## 🚀 Built for FOSS Hackathon  
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### 👨‍💻 Team Members:  
+- **Vansh Upreti**  
+- **Yash Vardhan Ruia**  
+- **Yuvraj Singh Parihar**  
+- **Kushagra Srivastva**  
+
+## 🔥 Features  
+- 📝 **Note-taking**  
+- 🔄 **Live Collaboration**  
+- 🔗 **GitHub Sync**  
+- ✅ **Task Management**  
+- 📶 **Offline Support**  
+
+## 🛠️ Tech Stack  
+
+### **Frontend**  
+- **Next.js (App Router)**  
+- **Tailwind CSS**  
+
+### **Backend**  
+- **Node.js + Express**  
+- **MongoDB Atlas (Database)**  
+
+## 🚀 Getting Started  
+
+### **Prerequisites**  
+Ensure you have the following installed:  
+- [Node.js](https://nodejs.org/) (LTS version recommended)  
+
+### **Installation**  
+
+#### 1️⃣ Clone the repository:  
+```sh
+git clone https://github.com/vanshupreti04/NoTiFy.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### 2️⃣ Install dependencies:  
+```sh
+npm install
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+#### 3️⃣ Run the development server:  
+```sh
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🤝 Contributing  
+We welcome contributions! Open issues and PRs to improve NoTiFy.  
 
-## Learn More
+## 🌍 Social Links  
+- 🔗 [GitHub Repository](https://github.com/vanshupreti04/NoTiFy.git)  
+- 🔗 [LinkedIn](https://www.linkedin.com/in/vanshupreti)  
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📜 License  
+This project is licensed under the [MIT License](LICENSE).  
