@@ -7,6 +7,11 @@ import { useEffect, useState } from "react";
 const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
   const [active, setActive] = useState(0);
 
+  // Store initial random rotations (fixes hydration mismatch)
+  const [initialRotations] = useState(() =>
+    testimonials.map(() => Math.floor(Math.random() * 21) - 10)
+  );
+
   const handleNext = () => {
     setActive((prev) => (prev + 1) % testimonials.length);
   };
@@ -21,14 +26,12 @@ const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
 
   useEffect(() => {
     if (autoplay) {
-      const interval = setInterval(handleNext, 5000);
+      const interval = setInterval(() => {
+        setActive((prev) => (prev + 1) % testimonials.length);
+      }, 5000);
       return () => clearInterval(interval);
     }
-  }, [autoplay]);
-
-  const randomRotateY = () => {
-    return Math.floor(Math.random() * 21) - 10;
-  };
+  }, [autoplay, testimonials.length]);
 
   return (
     <div className="max-w-6xl mx-auto antialiased font-sans px-4 md:px-8 lg:px-12 py-20">
@@ -45,13 +48,13 @@ const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
                     opacity: 0,
                     scale: 0.9,
                     z: -100,
-                    rotate: randomRotateY(),
+                    rotate: initialRotations[index], // Use stable rotation
                   }}
                   animate={{
                     opacity: isActive(index) ? 1 : 0.7,
                     scale: isActive(index) ? 1 : 0.95,
                     z: isActive(index) ? 0 : -100,
-                    rotate: isActive(index) ? 0 : randomRotateY(),
+                    rotate: isActive(index) ? 0 : initialRotations[index],
                     zIndex: isActive(index)
                       ? 999
                       : testimonials.length + 2 - index,
@@ -61,7 +64,7 @@ const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
                     opacity: 0,
                     scale: 0.9,
                     z: 100,
-                    rotate: randomRotateY(),
+                    rotate: 10, // Fixed rotation to avoid mismatch
                   }}
                   transition={{
                     duration: 0.4,
@@ -89,13 +92,13 @@ const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
             exit={{ y: -20, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
           >
-            <h3 className="text-4xl font-extrabold dark:text-white text-black"> {/* Larger Name */}
+            <h3 className="text-4xl font-extrabold dark:text-white text-black">
               {testimonials[active].name}
             </h3>
-            <p className="text-lg text-gray-400 dark:text-neutral-400 mt-2"> {/* Larger Designation */}
+            <p className="text-lg text-gray-400 dark:text-neutral-400 mt-2">
               {testimonials[active].designation}
             </p>
-            <motion.p className="text-2xl text-gray-500 mt-8 dark:text-neutral-300 leading-relaxed"> {/* Larger Quote */}
+            <motion.p className="text-2xl text-gray-500 mt-8 dark:text-neutral-300 leading-relaxed">
               {testimonials[active].quote.split(" ").map((word, index) => (
                 <motion.span
                   key={index}
@@ -114,8 +117,8 @@ const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
             </motion.p>
           </motion.div>
 
-          {/* Navigation Buttons (Moved Lower) */}
-          <div className="flex gap-6 pt-38 md:pt-10"> {/* ⬇ Moved Lower (was pt-12) */}
+          {/* Navigation Buttons */}
+          <div className="flex gap-6 pt-38 md:pt-10">
             <button
               onClick={handlePrev}
               className="h-10 w-10 rounded-full bg-gray-200 dark:bg-neutral-700 flex items-center justify-center group/button"
