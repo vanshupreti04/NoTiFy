@@ -1,86 +1,78 @@
-// src/app/small-business/page.js (for Next.js App Router)
-
 "use client"; // Necessary for framer-motion and client-side rendering
 
 import React from "react";
-import { motion } from "framer-motion";
+import { FaUsers, FaTasks, FaChartLine, FaDollarSign } from "react-icons/fa";
+import GradientText from "../blocks/Gradient-Text/GradientText";
 
 const SmallBusiness = () => {
   return (
     <div className="min-h-screen bg-black text-white px-8 py-16 flex flex-col items-center justify-center">
-      <div className="max-w-3xl w-full text-center">
+      <div className="max-w-6xl w-full text-center">
         {/* Hero Section */}
-        <h1 className="text-5xl font-bold mb-6">Small Business</h1>
-        <p className="text-gray-300 text-lg mb-10 leading-relaxed">
+        <h1 className="text-5xl font-bold text-purple-500 mb-6">Small Business</h1>
+        <p className="text-gray-400 text-lg mb-12 leading-relaxed">
           Discover how NoTiFy can streamline operations, improve team collaboration, and boost productivity for your small business.
-          Our platform is designed with small businesses in mind – simple, powerful, and customizable to fit your unique needs.
         </p>
-        
-        {/* Benefits Section with Hover-Up Effect */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <motion.div 
-            className="bg-gray-800 p-6 rounded-lg"
-            whileHover={{ y: -10, scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300, damping: 10 }}
-          >
-            <h3 className="text-2xl font-semibold mb-2">Seamless Collaboration</h3>
-            <p className="text-gray-400">
+
+        {/* Benefits Section - 4 Cards with Matching Headings */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
+          <div className="bg-gray-800 p-10 rounded-lg flex flex-col items-center text-center w-[280px]">
+            <FaUsers className="text-purple-500 text-5xl mb-4" />
+            <h3 className="text-2xl font-semibold mb-3 break-words text-center">
+              Seamless <br /> Collaboration
+            </h3>
+            <p className="text-gray-400 text-lg max-w-[300px]">
               Enhance team communication with real-time collaboration and easy sharing of ideas and projects.
             </p>
-          </motion.div>
-          <motion.div 
-            className="bg-gray-800 p-6 rounded-lg"
-            whileHover={{ y: -10, scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300, damping: 10 }}
-          >
-            <h3 className="text-2xl font-semibold mb-2">Efficient Workflow</h3>
-            <p className="text-gray-400">
+          </div>
+
+          <div className="bg-gray-800 p-10 rounded-lg flex flex-col items-center text-center w-[280px]">
+            <FaTasks className="text-purple-500 text-5xl mb-4" />
+            <h3 className="text-2xl font-semibold mb-3 text-center">
+              Efficient <br /> Workflow
+            </h3>
+            <p className="text-gray-400 text-lg max-w-[300px]">
               Organize tasks, projects, and notes in one unified platform to improve your operational efficiency.
             </p>
-          </motion.div>
-          <motion.div 
-            className="bg-gray-800 p-6 rounded-lg"
-            whileHover={{ y: -10, scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300, damping: 10 }}
-          >
-            <h3 className="text-2xl font-semibold mb-2">Data-Driven Insights</h3>
-            <p className="text-gray-400">
+          </div>
+
+          <div className="bg-gray-800 p-10 rounded-lg flex flex-col items-center text-center w-[280px]">
+            <FaChartLine className="text-purple-500 text-5xl mb-4" />
+            <h3 className="text-2xl font-semibold mb-3 text-center">
+              Data-Driven <br /> Insights
+            </h3>
+            <p className="text-gray-400 text-lg max-w-[300px]">
               Leverage analytics tools to gain insights into your business performance and make informed decisions.
             </p>
-          </motion.div>
-          <motion.div 
-            className="bg-gray-800 p-6 rounded-lg"
-            whileHover={{ y: -10, scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300, damping: 10 }}
-          >
-            <h3 className="text-2xl font-semibold mb-2">Cost Effective</h3>
-            <p className="text-gray-400">
+          </div>
+
+          <div className="bg-gray-800 p-10 rounded-lg flex flex-col items-center text-center w-[280px]">
+            <FaDollarSign className="text-purple-500 text-5xl mb-4" />
+            <h3 className="text-2xl font-semibold mb-3 break-words text-center">
+              Cost <br /> Effective
+            </h3>
+            <p className="text-gray-400 text-lg max-w-[300px]">
               Save time and resources with a scalable solution that grows alongside your business.
             </p>
-          </motion.div>
+          </div>
         </div>
-        
+
         {/* "Coming Soon" Animated Message */}
-        <motion.div
-          className="bg-gray-800 rounded-xl p-8 inline-block mb-10"
-          initial={{ opacity: 1, scale: 1 }}
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: "spring", stiffness: 300, damping: 10 }}
-        >
-          <h2 className="text-4xl font-bold text-purple-500">
+        <div className="mb-12">
+          <GradientText
+            colors={["#8A2BE2", "#6A0DAD", "#B266FF", "#4B0082", "#8A2BE2"]}
+            animationSpeed={3}
+            showBorder={true}
+            className="text-4xl font-bold"
+          >
             New Features Coming Soon!
-          </h2>
-        </motion.div>
-        
-        {/* Call-to-Action Section */}
-        <div>
-          <p className="text-gray-300 text-lg mb-6">
-            Ready to take your small business to the next level? Explore how NoTiFy can transform your operations and drive success.
-          </p>
-          <button className="bg-purple-600 hover:bg-purple-500 px-6 py-3 rounded font-semibold transition-transform transform hover:scale-105">
-            Learn More
-          </button>
+          </GradientText>
         </div>
+
+        {/* Final Tagline */}
+        <p className="text-gray-400 text-lg">
+          Ready to take your small business to the next level? Explore how NoTiFy can transform your operations and drive success.
+        </p>
       </div>
     </div>
   );

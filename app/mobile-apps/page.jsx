@@ -1,46 +1,37 @@
-// src/app/mobile-apps/page.js (for Next.js App Router)
-
-"use client"; // Necessary for framer-motion and client-side rendering
+"use client"; // Required for client-side rendering with framer-motion
 
 import React from "react";
 import { motion } from "framer-motion";
+import Lanyard from "../blocks/lanyard/lanyard"; // Import Lanyard component
 
 const MobileApps = () => {
   return (
-    <div className="min-h-screen bg-black text-white px-8 py-16 flex flex-col items-center justify-center">
-      <div className="max-w-3xl w-full text-center">
-        {/* Title & Description */}
-        <h1 className="text-5xl font-bold mb-6">Mobile Apps</h1>
-        <p className="text-gray-300 text-lg mb-10 leading-relaxed">
-          Download NoTiFy on iOS or Android to stay productive on the go.
-          Experience seamless note-taking, task management, and more! Our mobile platform is designed to keep you organized wherever you are.
+    <div className="relative min-h-screen bg-black text-white px-8 flex flex-col items-center justify-start">
+      
+      {/* Lanyard Component (ID Card Animation) - Positioned at the Top */}
+      <div className="absolute top-0 left-0 w-full flex justify-center">
+        <Lanyard position={[0, 0, 20]} gravity={[0, -80, 0]} />
+      </div>
+
+      {/* Large Heading: "Mobile    App" with Bigger Font & More Gap */}
+      <div className="absolute top-20 w-full flex justify-center text-[10rem] font-black text-purple-500">
+        <h1>Mobile&nbsp;&nbsp;&nbsp;&nbsp;Version</h1>
+      </div>
+
+      {/* Tagline & Button Section */}
+      <div className="mt-[650px] flex flex-col items-center">
+        <p className="text-gray-400 text-md max-w-2xl text-center leading-relaxed">
+          Download NoTiFy on iOS & Android for a seamless note-taking & task management experience.
         </p>
 
-        {/* "Coming Soon" Message with Pop-Up Hover Effect */}
-        <motion.div
-          className="bg-gray-800 rounded-xl p-8 inline-block"
-          initial={{ opacity: 1, scale: 1 }}
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: "spring", stiffness: 300, damping: 10 }}
-        >
-          <h2 className="text-5xl font-bold text-purple-500">
-            App is Coming Soon!
-          </h2>
-        </motion.div>
-
-        {/* Additional Info & "Stay Updated" CTA */}
-        <div className="mt-10">
-          <p className="text-gray-300 text-lg mb-6">
-            Our team is working hard to bring you an incredible mobile experience.
-            Stay tuned for updates and be the first to know when our app goes live!
-          </p>
-          <button className="bg-purple-600 hover:bg-purple-500 px-6 py-3 rounded font-semibold transition-transform transform hover:scale-105">
-            Stay Updated
-          </button>
-        </div>
+        <button className="mt-6 bg-purple-800 text-white border border-white px-6 py-3 rounded font-semibold transition-transform transform hover:scale-105 hover:bg-purple-700">
+          Stay Tuned
+        </button>
       </div>
+
     </div>
   );
 };
 
 export default MobileApps;
+

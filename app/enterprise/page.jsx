@@ -1,76 +1,90 @@
-// src/app/enterprise/page.js (for Next.js App Router)
-
 "use client"; // Necessary for framer-motion and client-side rendering
 
 import React from "react";
 import { motion } from "framer-motion";
+import { FaHeadset, FaShieldAlt, FaPlug, FaChartLine } from "react-icons/fa"; // Importing Icons
 
 const Enterprise = () => {
   return (
     <div className="min-h-screen bg-black text-white px-8 py-16">
       <div className="max-w-4xl mx-auto text-center">
+        
         {/* Hero Section */}
-        <h1 className="text-5xl font-bold mb-6">Enterprise Solutions</h1>
-        <p className="text-gray-300 text-lg mb-10 leading-relaxed">
-          Scale your organization with NoTiFy's robust, secure, and customizable platform. 
-          Our Enterprise Solutions offer advanced features, dedicated support, and seamless 
-          integrations tailored to your business needs.
+        <h1 className="text-5xl font-bold text-purple-500 mb-6">Enterprise Solutions</h1>
+        <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+          Scale your business with NoTiFy's secure and customizable platform.
         </p>
 
         {/* Key Features with Hover Effect */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <motion.div
-            className="bg-gray-800 p-6 rounded-lg"
+            className="bg-gray-900 p-6 rounded-lg flex items-center space-x-4 shadow-lg"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300, damping: 10 }}
           >
-            <h2 className="text-2xl font-semibold mb-2">Dedicated Support</h2>
-            <p className="text-gray-400">
-              Receive priority assistance from our expert team, ensuring minimal downtime and swift resolutions.
-            </p>
+            <FaHeadset className="text-purple-500 text-4xl" />
+            <div>
+              <h2 className="text-2xl font-semibold mb-2">Dedicated Support</h2>
+              <p className="text-gray-400">
+                Get priority assistance with minimal downtime & quick resolutions.
+              </p>
+            </div>
           </motion.div>
+
           <motion.div
-            className="bg-gray-800 p-6 rounded-lg"
+            className="bg-gray-900 p-6 rounded-lg flex items-center space-x-4 shadow-lg"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300, damping: 10 }}
           >
-            <h2 className="text-2xl font-semibold mb-2">Advanced Security</h2>
-            <p className="text-gray-400">
-              Protect your data with enterprise-grade encryption, role-based access controls, and compliance certifications.
-            </p>
+            <FaShieldAlt className="text-purple-500 text-4xl" />
+            <div>
+              <h2 className="text-2xl font-semibold mb-2">Advanced Security</h2>
+              <p className="text-gray-400">
+                Protect data with encryption, role-based access & compliance.
+              </p>
+            </div>
           </motion.div>
+
           <motion.div
-            className="bg-gray-800 p-6 rounded-lg"
+            className="bg-gray-900 p-6 rounded-lg flex items-center space-x-4 shadow-lg"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300, damping: 10 }}
           >
-            <h2 className="text-2xl font-semibold mb-2">Custom Integrations</h2>
-            <p className="text-gray-400">
-              Connect NoTiFy to your existing workflow with APIs, custom plugins, and seamless third-party integrations.
-            </p>
+            <FaPlug className="text-purple-500 text-4xl" />
+            <div>
+              <h2 className="text-2xl font-semibold mb-2">Custom Integrations</h2>
+              <p className="text-gray-400">
+                Connect NoTiFy with APIs, plugins & third-party apps.
+              </p>
+            </div>
           </motion.div>
+
           <motion.div
-            className="bg-gray-800 p-6 rounded-lg"
+            className="bg-gray-900 p-6 rounded-lg flex items-center space-x-4 shadow-lg"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300, damping: 10 }}
           >
-            <h2 className="text-2xl font-semibold mb-2">Scalable Architecture</h2>
-            <p className="text-gray-400">
-              Expand effortlessly as your team grows, with flexible hosting options and robust infrastructure.
-            </p>
+            <FaChartLine className="text-purple-500 text-4xl" />
+            <div>
+              <h2 className="text-2xl font-semibold mb-2">Scalable Architecture</h2>
+              <p className="text-gray-400">
+                Expand as your team grows with robust infrastructure.
+              </p>
+            </div>
           </motion.div>
         </div>
 
         {/* CTA */}
-        <div className="bg-gray-800 p-8 rounded-lg">
-          <h3 className="text-3xl font-bold mb-4">Empower Your Organization</h3>
+        <div className="text-center">
+          <h3 className="text-4xl font-bold text-purple-500 mb-4">Empowering Your Solution</h3>
           <p className="text-gray-400 mb-6">
-            Discover how NoTiFy can streamline collaboration, drive innovation, and elevate productivity at scale.
+            Discover how NoTiFy streamlines collaboration and boosts productivity.
           </p>
           <button className="bg-purple-600 hover:bg-purple-500 px-6 py-3 rounded font-semibold transition-transform transform hover:scale-105">
-            Contact Sales
+            Contact Us
           </button>
         </div>
+
       </div>
     </div>
   );
