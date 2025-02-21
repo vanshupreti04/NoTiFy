@@ -1,17 +1,21 @@
 export function cn(...inputs) {
-  const classSet = new Set();
+  return Array.from(
+    new Set(
+      inputs.flat().reduce((classes, input) => {
+        if (!input) return classes; // Ignore falsy values (null, undefined, false, etc.)
 
-  inputs.flat().forEach((input) => {
-    if (typeof input === "string") {
-      input.split(" ").forEach((cls) => {
-        if (cls) classSet.add(cls);
-      });
-    } else if (typeof input === "object" && input !== null) {
-      Object.entries(input).forEach(([key, value]) => {
-        if (value) classSet.add(key);
-      });
-    }
-  });
+        if (typeof input === "string") {
+          return classes.concat(input.includes(" ") ? input.split(" ") : input);
+        }
 
-  return Array.from(classSet).join(" ");
+        if (typeof input === "object") {
+          return classes.concat(
+            Object.keys(input).filter((key) => input[key]) // Add only truthy class names
+          );
+        }
+
+        return classes;
+      }, [])
+    )
+  ).join(" ");
 }

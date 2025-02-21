@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useContext, createContext } from "react";
+import { useState, useEffect, useCallback, useContext, createContext, useMemo } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -19,7 +19,7 @@ function useCarousel() {
 
 export function Carousel({
   orientation = "horizontal",
-  opts,
+  opts = {},
   setApi,
   plugins,
   className,
@@ -27,73 +27,55 @@ export function Carousel({
   ...props
 }) {
   const [carouselRef, api] = useEmblaCarousel(
-    {
-      ...opts,
-      axis: orientation === "horizontal" ? "x" : "y",
-    },
+    { ...opts, axis: orientation === "horizontal" ? "x" : "y" },
     plugins
   );
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
 
-  const onSelect = useCallback((api) => {
+  const updateScrollState = useCallback((api) => {
     if (!api) return;
     setCanScrollPrev(api.canScrollPrev());
     setCanScrollNext(api.canScrollNext());
   }, []);
 
-  const scrollPrev = useCallback(() => {
-    api?.scrollPrev();
-  }, [api]);
-
-  const scrollNext = useCallback(() => {
-    api?.scrollNext();
-  }, [api]);
-
-  const handleKeyDown = useCallback(
-    (event) => {
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        scrollPrev();
-      } else if (event.key === "ArrowRight") {
-        event.preventDefault();
-        scrollNext();
-      }
-    },
-    [scrollPrev, scrollNext]
-  );
+  const scrollPrev = useCallback(() => api?.scrollPrev(), [api]);
+  const scrollNext = useCallback(() => api?.scrollNext(), [api]);
 
   useEffect(() => {
-    if (!api || !setApi) return;
-    setApi(api);
+    if (api) {
+      updateScrollState(api);
+      api.on("reInit", updateScrollState);
+      api.on("select", updateScrollState);
+      return () => {
+        api.off("select", updateScrollState);
+        api.off("reInit", updateScrollState);
+      };
+    }
+  }, [api, updateScrollState]);
+
+  useEffect(() => {
+    if (api && setApi) setApi(api);
   }, [api, setApi]);
 
-  useEffect(() => {
-    if (!api) return;
-    onSelect(api);
-    api.on("reInit", onSelect);
-    api.on("select", onSelect);
-    return () => {
-      api?.off("select", onSelect);
-    };
-  }, [api, onSelect]);
+  const contextValue = useMemo(
+    () => ({
+      carouselRef,
+      api,
+      opts,
+      orientation,
+      scrollPrev,
+      scrollNext,
+      canScrollPrev,
+      canScrollNext,
+    }),
+    [carouselRef, api, opts, orientation, scrollPrev, scrollNext, canScrollPrev, canScrollNext]
+  );
 
   return (
-    <CarouselContext.Provider
-      value={{
-        carouselRef,
-        api,
-        opts,
-        orientation: orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
-        scrollPrev,
-        scrollNext,
-        canScrollPrev,
-        canScrollNext,
-      }}
-    >
+    <CarouselContext.Provider value={contextValue}>
       <div
-        onKeyDownCapture={handleKeyDown}
         className={cn("relative", className)}
         role="region"
         aria-roledescription="carousel"
@@ -110,11 +92,7 @@ export function CarouselContent({ className, ...props }) {
   return (
     <div ref={carouselRef} className="overflow-hidden">
       <div
-        className={cn(
-          "flex",
-          orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
-          className
-        )}
+        className={cn("flex", orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col", className)}
         {...props}
       />
     </div>
@@ -144,17 +122,18 @@ export function CarouselPrevious({ className, variant = "outline", size = "icon"
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-8 w-8 rounded-full",
+        "absolute h-10 w-10 rounded-full transition-opacity duration-200",
+        canScrollPrev ? "opacity-100" : "opacity-50",
         orientation === "horizontal"
-          ? "-left-12 top-1/2 -translate-y-1/2"
-          : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+          ? "-left-10 top-1/2 -translate-y-1/2"
+          : "-top-10 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
       {...props}
     >
-      <ArrowLeft className="h-4 w-4" />
+      <ArrowLeft className="h-5 w-5" />
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -167,17 +146,18 @@ export function CarouselNext({ className, variant = "outline", size = "icon", ..
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-8 w-8 rounded-full",
+        "absolute h-10 w-10 rounded-full transition-opacity duration-200",
+        canScrollNext ? "opacity-100" : "opacity-50",
         orientation === "horizontal"
-          ? "-right-12 top-1/2 -translate-y-1/2"
-          : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
+          ? "-right-10 top-1/2 -translate-y-1/2"
+          : "-bottom-10 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
       {...props}
     >
-      <ArrowRight className="h-4 w-4" />
+      <ArrowRight className="h-5 w-5" />
       <span className="sr-only">Next slide</span>
     </Button>
   );

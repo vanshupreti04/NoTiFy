@@ -1,24 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { supabase } from "../../backend/supabaseClient";
 
-export function useRealtimeData(table, initialData) {
+export function useRealtimeData(table, initialData = []) {
   const [data, setData] = useState(initialData);
 
   useEffect(() => {
-    const subscription = supabase
+    const channel = supabase
       .channel(`public:${table}`)
       .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table },
+        "postgres_changes",
+        { event: "*", schema: "public", table },
         (payload) => {
-          // Update state with payload.new (you can customize merge logic as needed)
-          setData(payload.new);
+          setData((prevData) => {
+            if (payload.eventType === "INSERT") {
+              return [...prevData, payload.new];
+            }
+            if (payload.eventType === "UPDATE") {
+              return prevData.map((item) =>
+                item.id === payload.new.id ? payload.new : item
+              );
+            }
+            if (payload.eventType === "DELETE") {
+              return prevData.filter((item) => item.id !== payload.old.id);
+            }
+            return prevData;
+          });
         }
       )
       .subscribe();
 
     return () => {
-      supabase.removeChannel(subscription);
+      supabase.removeChannel(channel);
     };
   }, [table]);
 

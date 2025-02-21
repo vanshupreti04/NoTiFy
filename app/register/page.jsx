@@ -30,7 +30,8 @@ const Register = () => {
     setMessage(null);
 
     try {
-      const res = await axios.post("/api/users/register", user);
+      // Updated endpoint to use Supabase signup route.
+      const res = await axios.post("/api/auth/signup", user);
       setMessage("Registration successful! Redirecting...");
 
       setTimeout(() => {

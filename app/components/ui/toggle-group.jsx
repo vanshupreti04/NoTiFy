@@ -12,32 +12,36 @@ const ToggleGroupContext = React.createContext({
 });
 
 const ToggleGroup = React.forwardRef(
-  ({ className, variant, size, children, ...props }, ref) => (
-    <ToggleGroupPrimitive.Root
-      ref={ref}
-      className={cn("flex items-center justify-center gap-1", className)}
-      {...props}
-    >
-      <ToggleGroupContext.Provider value={{ variant, size }}>
-        {children}
-      </ToggleGroupContext.Provider>
-    </ToggleGroupPrimitive.Root>
-  )
+  ({ className, variant = "default", size = "default", children, ...props }, ref) => {
+    const contextValue = React.useMemo(() => ({ variant, size }), [variant, size]);
+
+    return (
+      <ToggleGroupPrimitive.Root
+        ref={ref}
+        className={cn("flex items-center justify-center gap-1", className)}
+        {...props}
+      >
+        <ToggleGroupContext.Provider value={contextValue}>
+          {children}
+        </ToggleGroupContext.Provider>
+      </ToggleGroupPrimitive.Root>
+    );
+  }
 );
 
-ToggleGroup.displayName = ToggleGroupPrimitive.Root.displayName;
+ToggleGroup.displayName = "ToggleGroup";
 
 const ToggleGroupItem = React.forwardRef(
   ({ className, children, variant, size, ...props }, ref) => {
-    const context = React.useContext(ToggleGroupContext);
+    const { variant: contextVariant, size: contextSize } = React.useContext(ToggleGroupContext) || {};
 
     return (
       <ToggleGroupPrimitive.Item
         ref={ref}
         className={cn(
           toggleVariants({
-            variant: context.variant || variant,
-            size: context.size || size,
+            variant: variant || contextVariant,
+            size: size || contextSize,
           }),
           className
         )}
@@ -49,6 +53,6 @@ const ToggleGroupItem = React.forwardRef(
   }
 );
 
-ToggleGroupItem.displayName = ToggleGroupPrimitive.Item.displayName;
+ToggleGroupItem.displayName = "ToggleGroupItem";
 
 export { ToggleGroup, ToggleGroupItem };

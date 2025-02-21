@@ -1,21 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    turbo: {}, // ✅ Correct format for enabling Turbo (not `false`)
+    turbo: {}, // ✅ Enables TurboPack with default options
   },
   images: {
-    domains: ["images.unsplash.com"], // ✅ Allow external images from Unsplash
+    domains: ["images.unsplash.com"], // ✅ Allow Unsplash images
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.module.rules.push({
-      test: /\.(glb|gltf)$/, // ✅ Match .glb and .gltf files
+      test: /\.(glb|gltf)$/, // ✅ Supports .glb and .gltf 3D model files
       use: [
         {
           loader: "file-loader",
           options: {
-            name: "[name].[hash].[ext]", // ✅ Prevent filename conflicts
-            outputPath: "static/models/", // ✅ Saves files in `.next/static/models/`
-            publicPath: "/_next/static/models/", // ✅ Correct public access path
+            name: "[name].[contenthash].[ext]", // ✅ Ensures unique caching
+            outputPath: isServer ? "../public/models/" : "static/models/", // ✅ Adjusts output path
+            publicPath: "/models/", // ✅ Simplifies public path
           },
         },
       ],

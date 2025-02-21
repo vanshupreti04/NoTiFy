@@ -19,26 +19,16 @@ const Login = () => {
     setError(null);
 
     try {
-      console.log("🔄 Sending login request...");
-      const res = await axios.post("http://localhost:3000/users/login", {
-        email,
-        password,
-      });
+      // Updated endpoint to use Supabase login route.
+      const res = await axios.post("/api/auth/login", { email, password });
 
-      console.log("✅ Response received:", res.data);
-
-      if (res.data.token) {
-        // ✅ Store token in localStorage
-        localStorage.setItem("token", res.data.token);
-        console.log("🔑 Token stored:", res.data.token);
-
-        console.log("➡️ Navigating to dashboard...");
-        router.push("/dashboard"); // ✅ Redirect using Next.js router
+      if (res.data.data.session) {
+        localStorage.setItem("token", res.data.data.session.access_token);
+        router.push("/dashboard");
       } else {
-        setError("❌ Login failed: No token received.");
+        setError("Login failed: No session received.");
       }
     } catch (err) {
-      console.error("❌ Login error:", err);
       setError(err.response?.data?.error || "Something went wrong");
     }
   };

@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",  // ✅ Required for "paths" to work
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"]  // If your source files are inside `src/`
     }
   }
 }

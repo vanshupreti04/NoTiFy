@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { DndContext, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
+import { DndContext, useSensor, useSensors, PointerSensor, closestCorners } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -26,67 +26,98 @@ export function KanbanBoard() {
   const [data, setData] = useState(initialData);
   const [newTask, setNewTask] = useState("");
 
+  // Improved sensor for better drag interaction
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 3 }, // Reduces accidental drag issues
+    })
   );
 
+  // Handles drag and drop sorting
   const handleDragEnd = (event) => {
-    if (!event.over) return;
     const { active, over } = event;
-    if (active.id !== over.id) {
-      // Only reordering tasks within the sole column
-      const tasks = data.columns["column-1"].taskIds;
-      const oldIndex = tasks.indexOf(active.id);
-      const newIndex = tasks.indexOf(over.id);
+    if (!over || active.id === over.id) return;
+
+    const tasks = [...data.columns["column-1"].taskIds];
+    const oldIndex = tasks.indexOf(active.id);
+    const newIndex = tasks.indexOf(over.id);
+
+    if (oldIndex !== -1 && newIndex !== -1) {
       const newTaskIds = arrayMove(tasks, oldIndex, newIndex);
-      setData({
-        ...data,
+      setData((prevData) => ({
+        ...prevData,
         columns: {
-          ...data.columns,
-          "column-1": { ...data.columns["column-1"], taskIds: newTaskIds },
+          ...prevData.columns,
+          "column-1": { ...prevData.columns["column-1"], taskIds: newTaskIds },
         },
-      });
+      }));
     }
   };
 
+  // Adds a new task
   const addTask = () => {
     if (!newTask.trim()) return;
+    
     const taskId = `task-${Date.now()}`;
-    const newTaskObj = { id: taskId, content: newTask };
-    const updatedTaskIds = [...data.columns["column-1"].taskIds, taskId];
-    setData({
-      ...data,
-      tasks: { ...data.tasks, [taskId]: newTaskObj },
-      columns: { ...data.columns, "column-1": { ...data.columns["column-1"], taskIds: updatedTaskIds } },
-    });
+    const newTaskObj = { id: taskId, content: newTask.trim() };
+
+    setData((prevData) => ({
+      ...prevData,
+      tasks: { ...prevData.tasks, [taskId]: newTaskObj },
+      columns: {
+        ...prevData.columns,
+        "column-1": {
+          ...prevData.columns["column-1"],
+          taskIds: [...prevData.columns["column-1"].taskIds, taskId],
+        },
+      },
+    }));
+
     setNewTask("");
   };
 
+  // Deletes a task
   const deleteTask = (taskId) => {
-    const newTasks = { ...data.tasks };
-    delete newTasks[taskId];
-    const newTaskIds = data.columns["column-1"].taskIds.filter((id) => id !== taskId);
-    setData({
-      ...data,
-      tasks: newTasks,
-      columns: { ...data.columns, "column-1": { ...data.columns["column-1"], taskIds: newTaskIds } },
+    setData((prevData) => {
+      const newTasks = { ...prevData.tasks };
+      delete newTasks[taskId];
+
+      const newTaskIds = prevData.columns["column-1"].taskIds.filter((id) => id !== taskId);
+
+      return {
+        ...prevData,
+        tasks: newTasks,
+        columns: {
+          ...prevData.columns,
+          "column-1": { ...prevData.columns["column-1"], taskIds: newTaskIds },
+        },
+      };
     });
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-2">{data.columns["column-1"].title}</h1>
-      <div className="mb-4 flex gap-2">
+    <div className="p-4 bg-white rounded-lg shadow-md max-w-md mx-auto">
+      <h1 className="text-lg font-semibold mb-4">{data.columns["column-1"].title}</h1>
+
+      {/* Add Task Input */}
+      <div className="flex gap-2 mb-4">
         <Input
           placeholder="New Task"
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
+          className="flex-1"
         />
-        <Button onClick={addTask}>Add Task</Button>
+        <Button onClick={addTask} className="shrink-0">Add</Button>
       </div>
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd} ignoreContainerClipping={false}>
-        <SortableContext
-          items={data.columns["column-1"].taskIds}
+
+      {/* Drag-and-Drop Context */}
+      <DndContext 
+        sensors={sensors} 
+        onDragEnd={handleDragEnd} 
+        collisionDetection={closestCorners} // Improves drop accuracy
+      >
+        <SortableContext 
+          items={data.columns["column-1"].taskIds} 
           strategy={verticalListSortingStrategy}
         >
           {data.columns["column-1"].taskIds.map((taskId) => {
