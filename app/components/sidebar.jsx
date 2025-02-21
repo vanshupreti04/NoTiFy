@@ -3,33 +3,19 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { supabase } from "../../backend/supabaseClient";
-
 import {
-  Search,
-  Settings,
-  Plus,
-  Trash2,
-  ChevronDown,
-  ChevronRight,
-  Star,
-  MoreHorizontal,
-  File,
-  LayoutDashboard,
-  Table2,
-  Trello,
+  Search, Settings, Plus, Trash2, ChevronDown, ChevronRight, Star,
+  MoreHorizontal, File, LayoutDashboard, Table2, Trello
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 } from "../components/ui/dropdown-menu";
 import { cn } from "../components/lib/utils";
 
-// Add helper to save pages data
+// Save pages to Supabase
 const savePagesToBackend = async (pagesData) => {
   const { error } = await supabase.from("pages").upsert({ id: "default", data: pagesData });
   if (error) console.error("Supabase error:", error);
@@ -37,22 +23,13 @@ const savePagesToBackend = async (pagesData) => {
 
 export function Sidebar() {
   const [pages, setPages] = useState([
-    {
-      id: "1",
-      title: "Dashboard",
-      icon: <LayoutDashboard className="h-4 w-4" />,
-      isFavorite: true,
-      href: "/",
-    },
-    {
-      id: "2",
-      title: "Documents",
-      icon: <File className="h-4 w-4" />,
-      isExpanded: true,
+    { id: "1", title: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" />, isFavorite: true, href: "/" },
+    { 
+      id: "2", title: "Documents", icon: <File className="h-4 w-4" />, isExpanded: true, 
       children: [
         { id: "2.1", title: "Project A", icon: <File className="h-4 w-4" />, href: "/" },
         { id: "2.2", title: "Project B", icon: <File className="h-4 w-4" />, href: "/" },
-      ],
+      ]
     },
     { id: "3", title: "Spreadsheets", icon: <Table2 className="h-4 w-4" />, href: "/" },
     { id: "4", title: "Kanban Boards", icon: <Trello className="h-4 w-4" />, href: "/" },
@@ -84,19 +61,11 @@ export function Sidebar() {
   };
 
   const addNewPage = () => {
-    const newPages = [
-      ...pages,
-      { id: Date.now().toString(), title: "Untitled", icon: <File className="h-4 w-4" />, href: "/" },
-    ];
-    updatePages(newPages);
+    updatePages([...pages, { id: Date.now().toString(), title: "Untitled", icon: <File className="h-4 w-4" />, href: "/" }]);
   };
 
   const addNewFolder = () => {
-    const newPages = [
-      ...pages,
-      { id: Date.now().toString(), title: "New Folder", icon: <span className="text-xl">📂</span>, isExpanded: true, children: [] },
-    ];
-    updatePages(newPages);
+    updatePages([...pages, { id: Date.now().toString(), title: "New Folder", icon: <span className="text-xl">📂</span>, isExpanded: true, children: [] }]);
   };
 
   const deletePage = (pageId) => {
@@ -114,40 +83,19 @@ export function Sidebar() {
     setRenameValue(page.title);
   };
 
-  const confirmRename = (pageId) => {
-    const renamePages = (pagesArr) =>
-      pagesArr.map((p) => {
-        if (p.id === pageId) return { ...p, title: renameValue };
-        if (p.children) return { ...p, children: renamePages(p.children) };
-        return p;
-      });
-    updatePages(renamePages(pages));
+  const confirmRename = () => {
+    if (!renamePageId) return;
+    updatePages(renamePages(pages, renamePageId, renameValue));
     setRenamePageId(null);
     setRenameValue("");
   };
 
-  const duplicatePage = (pageId) => {
-    const original = findPageById(pageId, pages);
-    if (!original) return;
-    updatePages([
-      ...pages,
-      { ...original, id: Date.now().toString(), title: `${original.title} (Copy)` },
-    ]);
-  };
-
-  const addSubPage = (pageId) => {
-    const newSubPage = { id: Date.now().toString(), title: "New Sub-Page", icon: <File className="h-4 w-4" />, href: "/" };
-    const addSubPageRecursive = (pagesArr) =>
-      pagesArr.map((p) => {
-        if (p.id === pageId) {
-          const children = p.children ? [...p.children, newSubPage] : [newSubPage];
-          return { ...p, isExpanded: true, children };
-        }
-        if (p.children) return { ...p, children: addSubPageRecursive(p.children) };
-        return p;
-      });
-    updatePages(addSubPageRecursive(pages));
-  };
+  const renamePages = (pagesArr, pageId, newTitle) =>
+    pagesArr.map((p) => {
+      if (p.id === pageId) return { ...p, title: newTitle };
+      if (p.children) return { ...p, children: renamePages(p.children, pageId, newTitle) };
+      return p;
+    });
 
   const findPageById = (id, pagesArr) => {
     for (const p of pagesArr) {
@@ -160,7 +108,7 @@ export function Sidebar() {
     return null;
   };
 
-  const renderPage = (page, level = 0) => {
+  const renderPage = (page) => {
     const isRenaming = renamePageId === page.id;
 
     return (
@@ -183,8 +131,8 @@ export function Sidebar() {
               {page.title}
             </Link>
           ) : (
-            <Input value={renameValue} autoFocus onChange={(e) => setRenameValue(e.target.value)} onBlur={() => confirmRename(page.id)}
-              onKeyDown={(e) => { if (e.key === "Enter") confirmRename(page.id); }} className="flex-1 text-sm ml-1" />
+            <Input value={renameValue} autoFocus onChange={(e) => setRenameValue(e.target.value)} onBlur={confirmRename}
+              onKeyDown={(e) => { if (e.key === "Enter") confirmRename(); }} className="flex-1 text-sm ml-1" />
           )}
 
           <Button variant="ghost" size="icon" onClick={() => toggleFavorite(page.id)}>
@@ -192,7 +140,7 @@ export function Sidebar() {
           </Button>
         </div>
 
-        {page.children && page.isExpanded && <div className="mt-1">{page.children.map((child) => renderPage(child, level + 1))}</div>}
+        {page.children && page.isExpanded && <div className="mt-1">{page.children.map(renderPage)}</div>}
       </div>
     );
   };
@@ -214,7 +162,7 @@ export function Sidebar() {
         <Button variant="ghost" className="w-full justify-start" onClick={addNewPage}><Plus className="mr-2 h-4 w-4" />New Page</Button>
         <Button variant="ghost" className="w-full justify-start" onClick={addNewFolder}><span className="mr-2 text-xl">📂</span>New Folder</Button>
 
-        <div className="space-y-1">{pages.map((page) => renderPage(page))}</div>
+        <div className="space-y-1">{pages.map(renderPage)}</div>
       </div>
     </div>
   );

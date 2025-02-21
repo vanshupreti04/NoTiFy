@@ -5,11 +5,9 @@ import { useEffect, useState } from "react";
 export function ThemeProvider({ children, ...props }) {
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => setMounted(true), []);
 
-  if (!mounted) return <>{children}</>; // Prevents hydration mismatch
+  if (!mounted) return null; // Avoid rendering before hydration
 
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

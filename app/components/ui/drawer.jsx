@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "../lib/utils";
 
@@ -11,25 +11,13 @@ export function Drawer({ children, defaultOpen = false, ...props }) {
   const enhanceChild = (child) => {
     if (!React.isValidElement(child)) return child;
     const displayName = child.type.displayName;
-    if (displayName === "DrawerTrigger") {
-      return React.cloneElement(child, {
-        onClick: () => setOpen(true),
-      });
-    }
-    if (displayName === "DrawerClose") {
-      return React.cloneElement(child, {
-        onClick: () => setOpen(false),
-      });
-    }
-    if (displayName === "DrawerContent") {
-      return React.cloneElement(child, { open, setOpen });
-    }
-    // Recursively enhance children if available.
-    if (child.props && child.props.children) {
-      const enhancedChildren = React.Children.map(child.props.children, enhanceChild);
-      return React.cloneElement(child, undefined, enhancedChildren);
-    }
-    return child;
+
+    const sharedProps = {};
+    if (displayName === "DrawerTrigger") sharedProps.onClick = () => setOpen(true);
+    if (displayName === "DrawerClose") sharedProps.onClick = () => setOpen(false);
+    if (displayName === "DrawerContent") sharedProps.open = open, sharedProps.setOpen = setOpen;
+
+    return React.cloneElement(child, sharedProps);
   };
 
   const enhanced = React.Children.map(children, enhanceChild);
@@ -37,43 +25,61 @@ export function Drawer({ children, defaultOpen = false, ...props }) {
 }
 Drawer.displayName = "Drawer";
 
-export const DrawerTrigger = ({ children, onClick, ...props }) => {
-  return (
-    <button {...props} onClick={onClick}>
-      {children}
-    </button>
-  );
-};
+export const DrawerTrigger = ({ children, className, onClick, ...props }) => (
+  <button className={cn("p-2 rounded-md", className)} {...props} onClick={onClick}>
+    {children}
+  </button>
+);
 DrawerTrigger.displayName = "DrawerTrigger";
 
-export const DrawerClose = ({ children, onClick, ...props }) => {
-  return (
-    <button {...props} onClick={onClick}>
-      {children || "Close"}
-    </button>
-  );
-};
+export const DrawerClose = ({ children = "Close", className, onClick, ...props }) => (
+  <button className={cn("p-2 rounded-md", className)} {...props} onClick={onClick}>
+    {children}
+  </button>
+);
 DrawerClose.displayName = "DrawerClose";
 
 export const DrawerPortal = ({ children }) => {
-  return createPortal(children, document.body);
+  const [mounted, setMounted] = useState(false);
+  const portalRef = useRef(null);
+
+  useEffect(() => {
+    portalRef.current = document.body;
+    setMounted(true);
+  }, []);
+
+  return mounted && portalRef.current ? createPortal(children, portalRef.current) : null;
 };
 DrawerPortal.displayName = "DrawerPortal";
 
 export const DrawerOverlay = React.forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("fixed inset-0 z-50 bg-black/80", className)} {...props} />
+  <div
+    ref={ref}
+    className={cn("fixed inset-0 z-50 bg-black/80 transition-opacity", className)}
+    {...props}
+  />
 ));
 DrawerOverlay.displayName = "DrawerOverlay";
 
 export const DrawerContent = React.forwardRef(({ open, setOpen, className, children, ...props }, ref) => {
   if (!open) return null;
+
+  const closeOnEscape = useCallback((e) => {
+    if (e.key === "Escape") setOpen(false);
+  }, [setOpen]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [closeOnEscape]);
+
   return (
     <DrawerPortal>
       <DrawerOverlay onClick={() => setOpen(false)} />
       <div
         ref={ref}
         className={cn(
-          "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-lg border bg-background",
+          "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-lg border bg-background transition-transform duration-200",
           className
         )}
         {...props}

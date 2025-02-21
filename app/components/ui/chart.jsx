@@ -25,10 +25,7 @@ const ChartContainer = forwardRef(({ id, className, children, config, ...props }
       <div
         data-chart={chartId}
         ref={ref}
-        className={cn(
-          "flex aspect-video justify-center text-xs",
-          className
-        )}
+        className={cn("flex aspect-video justify-center text-xs", className)}
         {...props}
       >
         <ChartStyle id={chartId} config={config} />
@@ -48,6 +45,7 @@ const ChartStyle = ({ id, config }) => {
 
   return (
     <style
+      role="presentation"
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
           .map(([theme, prefix]) => `
@@ -59,9 +57,8 @@ ${colorConfig
   })
   .join("\n")}
 }
-`)
-          .join("\n"),
-      }}
+`)}
+      }
     />
   );
 };
@@ -103,13 +100,10 @@ const ChartTooltipContent = forwardRef(
         return <div className={cn("font-medium", labelClassName)}>{labelFormatter(value, payload)}</div>;
       }
 
-      if (!value) return null;
-      return <div className={cn("font-medium", labelClassName)}>{value}</div>;
+      return value ? <div className={cn("font-medium", labelClassName)}>{value}</div> : null;
     }, [label, labelFormatter, payload, hideLabel, labelClassName, config, labelKey]);
 
     if (!active || !payload?.length) return null;
-
-    const nestLabel = payload.length === 1 && indicator !== "dot";
 
     return (
       <div
@@ -119,15 +113,15 @@ const ChartTooltipContent = forwardRef(
           className
         )}
       >
-        {!nestLabel ? tooltipLabel : null}
+        {tooltipLabel}
         <div className="grid gap-1.5">
-          {payload.map((item, index) => {
+          {payload.map((item) => {
             const key = nameKey || item.name || item.dataKey || "value";
             const itemConfig = getPayloadConfigFromPayload(config, item, key);
-            const indicatorColor = color || item.payload.fill || item.color;
+            const indicatorColor = color || item.payload?.fill || item.color;
 
             return (
-              <div key={item.dataKey} className="flex items-center gap-2">
+              <div key={key} className="flex items-center gap-2">
                 {!hideIndicator && (
                   <div
                     className="h-2 w-2 shrink-0 rounded-[2px]"
@@ -138,7 +132,7 @@ const ChartTooltipContent = forwardRef(
                   <span className="text-muted-foreground">{itemConfig?.label || item.name}</span>
                   {item.value && (
                     <span className="font-mono font-medium tabular-nums text-foreground">
-                      {item.value.toLocaleString()}
+                      {formatter ? formatter(item.value) : item.value.toLocaleString()}
                     </span>
                   )}
                 </div>
@@ -166,7 +160,7 @@ const ChartLegendContent = forwardRef(({ className, hideIcon = false, payload, v
         const itemConfig = getPayloadConfigFromPayload(config, item, key);
 
         return (
-          <div key={item.value} className="flex items-center gap-1.5">
+          <div key={key} className="flex items-center gap-1.5">
             {!hideIcon && (
               <div
                 className="h-2 w-2 shrink-0 rounded-[2px]"
@@ -183,22 +177,18 @@ const ChartLegendContent = forwardRef(({ className, hideIcon = false, payload, v
 ChartLegendContent.displayName = "ChartLegend";
 
 function getPayloadConfigFromPayload(config, payload, key) {
-  if (typeof payload !== "object" || payload === null) return undefined;
+  if (!config || typeof payload !== "object" || !payload) return undefined;
 
-  const payloadPayload =
-    "payload" in payload && typeof payload.payload === "object" && payload.payload !== null
-      ? payload.payload
-      : undefined;
-
-  let configLabelKey = key;
+  const payloadData = payload?.payload || {};
+  let configKey = key;
 
   if (key in payload && typeof payload[key] === "string") {
-    configLabelKey = payload[key];
-  } else if (payloadPayload && key in payloadPayload && typeof payloadPayload[key] === "string") {
-    configLabelKey = payloadPayload[key];
+    configKey = payload[key];
+  } else if (key in payloadData && typeof payloadData[key] === "string") {
+    configKey = payloadData[key];
   }
 
-  return configLabelKey in config ? config[configLabelKey] : config[key];
+  return config[configKey] || config[key];
 }
 
 export {

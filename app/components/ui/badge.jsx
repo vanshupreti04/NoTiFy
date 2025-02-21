@@ -14,17 +14,27 @@ const badgeVariants = cva(
           "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
+        outline: "border border-gray-300 text-foreground dark:border-gray-600",
+      },
+      size: {
+        sm: "px-2 py-0.5 text-xs",
+        md: "px-3 py-1 text-sm",
+        lg: "px-4 py-1.5 text-base",
       },
     },
     defaultVariants: {
       variant: "default",
+      size: "md",
     },
   }
 );
 
-export function Badge({ className, variant = "default", ...props }) {
-  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
+export function Badge({ className, variant = "default", size = "md", children, ...props }) {
+  return (
+    <span className={cn(badgeVariants({ variant, size }), className)} {...props}>
+      {children}
+    </span>
+  );
 }
 
 export { badgeVariants };

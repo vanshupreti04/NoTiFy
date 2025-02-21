@@ -16,22 +16,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { supabase } from "../../backend/supabaseClient";
 
 const inter = Inter({ subsets: ["latin"] });
+
 export default function Page() {
-  const [activeTab, setActiveTab] = useState(null);
+  const [activeTab, setActiveTab] = useState("dashboard");
 
-  // Ensure tab state is consistent between SSR & client
-  useEffect(() => {
-    setActiveTab("document");
-  }, []);
-
-  if (!activeTab) return null; // Prevent hydration mismatch
+  // Hydration fix to ensure consistency between SSR & client
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null; // Prevents hydration mismatch
 
   const createNewPage = async () => {
-    // Example stub: insert new page data into supabase
-    const newPage = { title: "New Page", content: "" };
-    const { error } = await supabase.from("pages").insert(newPage);
-    if (error) console.error("Failed to create page:", error);
-    else alert("New page created!");
+    try {
+      const { error } = await supabase.from("pages").insert([{ title: "New Page", content: "" }]);
+      if (error) throw error;
+      alert("New page created!");
+    } catch (err) {
+      console.error("Failed to create page:", err.message);
+    }
   };
 
   return (
@@ -39,6 +40,7 @@ export default function Page() {
       <div className="flex h-screen">
         <Sidebar />
         <main className="flex-1 flex flex-col">
+          {/* Header Section */}
           <header className="flex items-center justify-between px-6 py-3 border-b bg-white">
             <h1 className="text-xl font-semibold">My Workspace</h1>
             <div className="flex items-center gap-2">
@@ -56,25 +58,29 @@ export default function Page() {
               </Button>
             </div>
           </header>
+
+          {/* Tabs Section */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
             <TabsList className="justify-start px-6 py-2 bg-gray-100">
-              <TabsTrigger value="dashboard" className="data-[state=active]:bg-white">
+              <TabsTrigger value="dashboard">
                 <LayoutDashboard className="h-4 w-4 mr-2" />
                 Dashboard
               </TabsTrigger>
-              <TabsTrigger value="document" className="data-[state=active]:bg-white">
+              <TabsTrigger value="document">
                 <FileText className="h-4 w-4 mr-2" />
                 Document
               </TabsTrigger>
-              <TabsTrigger value="spreadsheet" className="data-[state=active]:bg-white">
+              <TabsTrigger value="spreadsheet">
                 <Table className="h-4 w-4 mr-2" />
                 Spreadsheet
               </TabsTrigger>
-              <TabsTrigger value="kanban" className="data-[state=active]:bg-white">
+              <TabsTrigger value="kanban">
                 <Trello className="h-4 w-4 mr-2" />
                 Kanban
               </TabsTrigger>
             </TabsList>
+
+            {/* Tab Contents */}
             <TabsContent value="dashboard" className="flex-1 p-6 bg-gray-50">
               <Dashboard />
             </TabsContent>
