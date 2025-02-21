@@ -62,7 +62,8 @@ const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
                     opacity: isActive(index) ? 1 : 0.7,
                     scale: isActive(index) ? 1 : 0.95,
                     z: isActive(index) ? 0 : -100,
-                    rotate: isActive(index) ? 0 : rotations[index],
+                    rotate: isActive(index) ? 0 : rotations[index] * 0.3, // 🔹 Reduce the tilt by half
+
                     zIndex: isActive(index)
                       ? 999
                       : testimonials.length + 2 - index,

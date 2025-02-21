@@ -53,21 +53,21 @@ export const MacbookScroll = ({
   const textOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   return (
-    (<div
+    <div
       ref={ref}
       className="min-h-[200vh]  flex flex-col items-center py-0 md:py-80 justify-start flex-shrink-0 [perspective:800px] transform md:scale-100  scale-[0.35] sm:scale-50">
-      <motion.h2
+      <motion.div
         style={{
           translateY: textTransform,
           opacity: textOpacity,
         }}
         className="dark:text-white text-neutral-800 text-3xl font-bold -mt-60 text-center">
-             <h1 className="text-8xl font-bold text-purple-500 mb-10 ">Desktop Apps</h1>
-            <p className="text-gray-600 text-lg leading-relaxed mb-20">
-              Get NoTiFy for Mac, Windows, or Linux and enjoy a powerful note-taking experience right on your desktop.
-              Seamlessly sync your notes, tasks, and ideas across all your devices.
-            </p>
-      </motion.h2>
+          <h1 className="text-8xl font-bold text-purple-500 mb-10">Desktop Apps</h1>
+          <h2 className="text-gray-600 text-lg leading-relaxed mb-20">
+            Get NoTiFy for Mac, Windows, or Linux and enjoy a powerful note-taking experience right on your desktop.
+            Seamlessly sync your notes, tasks, and ideas across all your devices.
+          </h2>
+      </motion.div>
       {/* Lid */}
       <Lid
         src={src}
@@ -102,7 +102,7 @@ export const MacbookScroll = ({
         )}
         {badge && <div className="absolute bottom-4 left-4">{badge}</div>}
       </div>
-    </div>)
+    </div>
   );
 };
 
@@ -149,7 +149,7 @@ export const Lid = ({
             <Image
                 src="/assets/desktop.png"
                 alt="aceternity logo"
-                fill
+                fill="none"
                 className="object-cover object-[8%] absolute rounded-lg inset-0 h-full w-full"
             />
         </motion.div>
@@ -170,7 +170,7 @@ export const Trackpad = () => {
 
 export const Keypad = () => {
   return (
-    (<div className="h-full rounded-md bg-[#050505] mx-1 p-1">
+    <div className="h-full rounded-md bg-[#050505] mx-1 p-1">
       {/* First Row */}
       <Row>
         <KBtn
@@ -334,16 +334,16 @@ export const Keypad = () => {
           <span className="block">P</span>
         </KBtn>
         <KBtn>
-          <span className="block">{`{`}</span>
-          <span className="block">{`[`}</span>
+          <span className="block">{}</span>
+          <span className="block">{}</span>
         </KBtn>
         <KBtn>
-          <span className="block">{`}`}</span>
-          <span className="block">{`]`}</span>
+          <span className="block">{}</span>
+          <span className="block">{}</span>
         </KBtn>
         <KBtn>
-          <span className="block">{`|`}</span>
-          <span className="block">{`\\`}</span>
+          <span className="block">{}</span>
+          <span className="block">{}</span>
         </KBtn>
       </Row>
       {/* Fourth Row */}
@@ -382,12 +382,12 @@ export const Keypad = () => {
           <span className="block">L</span>
         </KBtn>
         <KBtn>
-          <span className="block">{`:`}</span>
-          <span className="block">{`;`}</span>
+          <span className="block">{}</span>
+          <span className="block">{}</span>
         </KBtn>
         <KBtn>
-          <span className="block">{`"`}</span>
-          <span className="block">{`'`}</span>
+          <span className="block">{}</span>
+          <span className="block">{}</span>
         </KBtn>
         <KBtn
           className="w-[2.85rem] items-end justify-end pr-[4px] pb-[2px]"
@@ -424,16 +424,16 @@ export const Keypad = () => {
           <span className="block">M</span>
         </KBtn>
         <KBtn>
-          <span className="block">{`<`}</span>
-          <span className="block">{`,`}</span>
+          <span className="block">{}</span>
+          <span className="block">{}</span>
         </KBtn>
         <KBtn>
-          <span className="block">{`>`}</span>
-          <span className="block">{`.`}</span>
+          <span className="block">{}</span>
+          <span className="block">{}</span>
         </KBtn>{" "}
         <KBtn>
-          <span className="block">{`?`}</span>
-          <span className="block">{`/`}</span>
+          <span className="block">{}</span>
+          <span className="block">{}</span>
         </KBtn>
         <KBtn
           className="w-[3.65rem] items-end justify-end pr-[4px] pb-[2px]"
@@ -510,8 +510,8 @@ export const Keypad = () => {
           </div>
         </div>
       </Row>
-    </div>)
-  );
+    </div>
+  )
 };
 export const KBtn = ({
   className,
@@ -586,7 +586,7 @@ export const OptionKey = ({
         strokeWidth={2}
         points="10.6,5 4,5 4,7 9.4,7 18.4,27 28,27 28,25 19.6,25 " />
       <rect
-        id="_Transparent_Rectangle_"
+        id="Transparent_Rectangle"
         className="st0"
         width="32"
         height="32"
@@ -597,7 +597,7 @@ export const OptionKey = ({
 
 const AceternityLogo = () => {
   return (
-    (<svg
+    <svg
       width="66"
       height="65"
       viewBox="0 0 66 65"
@@ -610,6 +610,6 @@ const AceternityLogo = () => {
         strokeWidth="15"
         strokeMiterlimit="3.86874"
         strokeLinecap="round" />
-    </svg>)
-  );
-};
+    </svg>
+  )
+}

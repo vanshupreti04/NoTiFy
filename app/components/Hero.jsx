@@ -1,48 +1,49 @@
 "use client";
 
 import { useRef } from "react";
-import { useRouter } from "next/navigation"; // ✅ FIXED: Correct import for App Router
+import { useRouter } from "next/navigation";
 import VariableProximity from "../blocks/text-animations/VariableProximity";
 import PixelTransition from "../blocks/Pixel-Transition/PixelTransition";
 import { useTranslation } from "react-i18next";
-import Image from "next/image"; // ✅ Next.js optimized image
+import Image from "next/image";
 
 const Hero = () => {
   const containerRef = useRef(null);
-  const router = useRouter(); // ✅ FIXED: Correct hook usage for Next.js 13+
+  const router = useRouter();
   const { t } = useTranslation();
 
   return (
-    <section className="flex items-center justify-between h-screen mt-6 pl-16 md:pl-32 bg-[#000000] text-white">
+    <section className="flex flex-col md:flex-row items-center justify-between h-screen mt-6 px-6 md:px-16 lg:pl-32 bg-[#000000] text-white">
       {/* Left side: Text and buttons */}
-      <div ref={containerRef} className="max-w-2xl">
-        {/* Animated Hero Title */}
+      <div ref={containerRef} className="max-w-2xl text-center md:text-left">
+        {/* Animated Hero Title - Responsive Size */}
         <VariableProximity
-          label={t("Visualize \n \n \n \n \n \n  Write \n Organize")} // ✅ Translation applied
+          label={t("Visualize   Write \n Organize")}
           fromFontVariationSettings="'wght' 400, 'opsz' 9"
           toFontVariationSettings="'wght' 1000, 'opsz' 40"
           containerRef={containerRef}
           radius={100}
           falloff="linear"
-          className="text-6xl md:text-8xl font-bold font-['Futura'] leading-tight"
+          className="text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-bolder font-['Futura'] leading-tight 
+          mt-10 md:mt-0" // ✅ Adds margin-top for mobile
         />
 
         {/* ✅ Translated Tagline */}
-        <p className="mt-8 text-xl md:text-2xl text-[#AAAAAA] font-normal leading-snug">
+        <p className="mt-6 text-lg md:text-2xl text-[#AAAAAA] font-normal leading-snug">
           {t("tagline")}
         </p>
 
         {/* Buttons */}
-        <div className="mt-10 flex space-x-6">
+        <div className="mt-8 flex justify-center md:justify-start space-x-4 md:space-x-6">
           <button
-            onClick={() => router.push("/login")} // ✅ FIXED: Works properly in App Router
-            className="px-6 py-3 text-lg font-medium text-black bg-[#AC6AFF] rounded-md transition-all duration-300 hover:text-white"
+            onClick={() => router.push("/login")}
+            className="px-5 py-2 sm:px-6 sm:py-3 text-base sm:text-lg font-medium text-black bg-[#AC6AFF] rounded-md transition-all duration-300 hover:text-white"
           >
             {t("get_started")}
           </button>
           <button
-            onClick={() => router.push("/docs")} // ✅ FIXED: Works properly in App Router
-            className="px-6 py-3 text-lg font-medium text-white border border-white rounded-md transition-all duration-300 hover:border-white hover:text-[#AC6AFF]"
+            onClick={() => router.push("/docs")}
+            className="px-5 py-2 sm:px-6 sm:py-3 text-base sm:text-lg font-medium text-white border border-white rounded-md transition-all duration-300 hover:border-white hover:text-[#AC6AFF]"
           >
             {t("learn_more")}
           </button>
@@ -50,16 +51,21 @@ const Hero = () => {
       </div>
 
       {/* Right side: PixelTransition effect */}
-      <div className="flex-shrink-0 mr-40 w-[480px] h-[480px] relative">
+      <div
+        className="flex-shrink-0 relative 
+        mt-10 md:mt-0 md:mr-16  w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] md:w-[500px] md:h-[500px] 
+        md:flex md:items-start md:ml-16 // ✅ Adds gap between text & image on desktop 
+        flex items-center justify-center" // ✅ Moves image below text on mobile
+      >
         <PixelTransition
           firstContent={
             <Image
               src="/assets/HeroImage.png"
               alt={t("hero_image_alt")}
-              width={800} // ✅ Ensure proper size
-              height={600}
+              width={1300}
+              height={1300}
               className="object-cover w-full h-auto"
-              priority // ✅ Helps with loading performance
+              priority
             />
           }
           secondContent={
@@ -72,7 +78,7 @@ const Hero = () => {
                 backgroundColor: "#111",
               }}
             >
-              <p style={{ fontWeight: 900, fontSize: "3rem", color: "white" }}>
+              <p className="font-extrabold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white">
                 {t("pixel_transition_text")}
               </p>
             </div>
