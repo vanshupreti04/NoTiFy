@@ -16,13 +16,21 @@ export const Carousel = ({ items, initialScroll = 0 }) => {
   const carouselRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false); // ✅ Track if mobile
 
   useEffect(() => {
     if (carouselRef.current) {
       carouselRef.current.scrollLeft = initialScroll;
       checkScrollability();
     }
+    
+    const updateScreenSize = () => {
+      setIsMobile(window.innerWidth <= 450); // ✅ Update mobile state
+    };
+
+    updateScreenSize();
+    window.addEventListener("resize", updateScreenSize);
+    return () => window.removeEventListener("resize", updateScreenSize);
   }, [initialScroll]);
 
   const checkScrollability = () => {
@@ -45,28 +53,11 @@ export const Carousel = ({ items, initialScroll = 0 }) => {
     }
   };
 
-  const handleCardClose = (index) => {
-    if (carouselRef.current) {
-      const cardWidth = isMobile() ? 230 : 384;
-      const gap = isMobile() ? 4 : 8;
-      const scrollPosition = (cardWidth + gap) * (index + 1);
-      carouselRef.current.scrollTo({
-        left: scrollPosition,
-        behavior: "smooth",
-      });
-      setCurrentIndex(index);
-    }
-  };
-
-  const isMobile = () => {
-    return typeof window !== "undefined" && window.innerWidth < 768;
-  };
-
   return (
-    <CarouselContext.Provider value={{ onCardClose: handleCardClose, currentIndex }}>
+    <CarouselContext.Provider value={{ currentIndex: 0 }}>
       <div className="relative w-full">
         <div
-          className="flex w-full overflow-x-scroll overscroll-x-auto py-10 md:py-20 scroll-smooth [scrollbar-width:none]"
+          className="flex w-full overflow-x-scroll py-10 md:py-20 scroll-smooth [scrollbar-width:none]"
           ref={carouselRef}
           onScroll={checkScrollability}
         >
@@ -84,7 +75,8 @@ export const Carousel = ({ items, initialScroll = 0 }) => {
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 mr-10">
+        {/* ✅ Hide buttons on screens 450px or smaller */}
+        <div className={`flex justify-end gap-2 mr-10 ${isMobile ? "hidden" : ""}`}>
           <button
             className="relative z-40 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center disabled:opacity-50"
             onClick={scrollLeft}

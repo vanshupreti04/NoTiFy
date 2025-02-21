@@ -1,40 +1,49 @@
-"use client"; // ✅ Ensures this component runs on the client side
+"use client";
 
-import Link from "next/link"; // ✅ Next.js optimized routing
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { useTranslation } from "react-i18next"; // ✅ Translation hook
-import CardSecondDemo from "../blocks/3D-Card/CardSecondDemo"; // ✅ Updated to absolute import for better maintainability
+import { useTranslation } from "react-i18next";
+import CardSecondDemo from "../blocks/3D-Card/CardSecondDemo";
 
 const UseCase = () => {
-  const { t } = useTranslation(); // ✅ Initialize translation
+  const { t } = useTranslation();
 
   return (
-    <div className="mt-24 px-6 md:px-32 flex flex-col md:flex-row justify-between items-center relative">
+    <div className=" dark mt-24 px-6 md:px-32 flex flex-col lg:flex-row justify-between items-center relative text-center lg:text-left">
       {/* Left-aligned content */}
       <div className="max-w-2xl z-10 mt-24">
-        <h1 className="text-5xl md:text-6xl font-extrabold text-white leading-[1.3]">
+        {/* ✅ Responsive heading with fluid scaling */}
+        <h1 className="text-[clamp(32px,5vw,60px)] font-extrabold text-white leading-[1.2]">
           {t("built_for_everyone")}
         </h1>
-        <h1 className="text-5xl mt-3 md:text-6xl font-extrabold text-white leading-[1.3]">
+        <h1 className="text-[clamp(32px,5vw,60px)] mt-3 font-extrabold text-white leading-[1.2]">
           {t("designed_for_you")}
         </h1>
 
-        <p className="text-base md:text-lg text-gray-400 mt-4">
+        {/* ✅ Responsive tagline size & spacing */}
+        <p className="text-[clamp(14px,2vw,20px)] text-gray-400 mt-4 md:mt-6">
           {t("usecase_tagline")}
         </p>
 
-        {/* ✅ Next.js Link for navigation */}
+        {/* ✅ Responsive "Explore Docs" link */}
         <Link
           href="/docs"
-          className="inline-flex items-center gap-2 mt-6 text-base md:text-lg font-medium text-[#AC6AFF] hover:underline"
+          className="inline-flex items-center gap-2 mt-6 md:mt-8 text-[clamp(16px,2vw,24px)] font-semibold text-[#AC6AFF] hover:underline"
         >
-          {t("explore_docs")} <ArrowRight size={20} />
+          {t("explore_docs")} 
+          <ArrowRight style={{ width: "clamp(16px, 2vw, 24px)" }} />
         </Link>
       </div>
 
-      {/* Right-aligned floating 3D card */}
-      <div className="absolute right-0 md:right-40 top-10 md:-top-24 w-[20rem] md:w-[28rem] z-0">
-        <CardSecondDemo />
+      {/* ✅ Card positioning: 
+          - Below "Explore Docs" for **450px** but moved even higher
+          - Fixed to the right for **1300px and above** */}
+      <div className="w-full flex justify-center lg:justify-start mt-10 lg:mt-0 lg:absolute lg:right-40 lg:-top-12 
+                      sm:max-w-[28rem] sm:mt-10 sm:mb-10 
+                      [@media(max-width:450px)]:mt-[-40] [@media(max-width:450px)]:flex [@media(max-width:450px)]:justify-center">
+        <div className="w-[clamp(16rem,35vw,28rem)] sm:w-[clamp(14rem,40vw,24rem)]">
+          <CardSecondDemo />
+        </div>
       </div>
     </div>
   );
