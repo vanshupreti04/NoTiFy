@@ -40,7 +40,7 @@ const Home = () => {
   return (
     <div className="relative min-h-screen bg-[#000000] text-white overflow-x-hidden">
       {/* ✅ Navbar Section */}
-      <nav className="relative flex items-center mt-10 w-full px-[3vw] lg:px-[6vw] ">
+      <nav className="relative flex items-center justify-between w-full px-[3vw] lg:px-[6vw] mt-10 ">
         {/* ✅ Left Side: Logo & Project Name */}
       <div className="flex items-center space-x-[1vw] flex-shrink-0">
         <Image
@@ -50,13 +50,13 @@ const Home = () => {
           height={80}
           className="max-w-[50px] max-h-[50px]"
         />
-        <h1 className="text-[2.5vw] lg:text-[2vw] font-bold text-white">
+        <h1 className="text-[5vw] lg:text-[2vw] font-bold text-white">
           {t("logo_heading")}
         </h1>
       </div>
 
       {/* ✅ Centered Navbar Links */}
-      <div className="hidden lg:flex flex-1 justify-center gap-[2vw] min-w-0">
+      <div className="hidden lg:flex flex-grow justify-center gap-[2vw] min-w-0">
 
         {[  
           { name: t("home"), path: "/" },
@@ -78,11 +78,11 @@ const Home = () => {
       </div>
 
       {/* ✅ Separate Login Button, Shift Left */}
-      <div className="hidden lg:block lg:mr-auto -ml-[5vw]"> 
+      <div className="hidden lg:block"> 
         <StarBorder
           as={Link}
           href="/login"
-          className=" -ml-8 w-[clamp(80px, 8vw, 150px)] "
+          className=" w-[clamp(80px, 8vw, 150px)] "
         >
           {t("login")}
         </StarBorder>
@@ -90,7 +90,7 @@ const Home = () => {
 
        {/* ✅ Mobile Menu Button (Hamburger Icon) */}
         <button
-          className="block lg:hidden text-white focus:outline-none absolute right-[4vw] "
+          className="lg:hidden absolute right-[4vw] text-white focus:outline-none"
           onClick={() => setMenuOpen(true)}
         >
           <svg
@@ -188,11 +188,13 @@ const Home = () => {
       </nav>
 
       {/* ✅ Sections */}
-      <div className="-mt-[3vh]">
+      <div className="-mt-[35vh] sm:-mt-5 md:mt-0">
         <Hero />
       </div>
 
-      <div className="mt-[6vh]">
+
+
+      <div className="-mt-[30vh] sm:-mt-5 md:-mt-6">
         <BentoGridSecondDemo />
       </div>
 

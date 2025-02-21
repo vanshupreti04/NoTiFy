@@ -8,9 +8,13 @@
     height: 480px; 
     position: relative;
     overflow: hidden;
+    
   }
-  
-  
+  .pixelated-image-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
   .pixelated-image-card__default,
   .pixelated-image-card__active,
   .pixelated-image-card__pixels {
