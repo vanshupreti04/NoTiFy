@@ -21,12 +21,13 @@ const Login = () => {
 
     try {
       const res = await axios.post("/api/auth/login", { email, password });
-
-      if (res.data.data.session) {
-        localStorage.setItem("token", res.data.data.session.access_token);
+      // Use optional chaining to avoid "undefined" errors
+      const session = res?.data?.data?.session;
+      if (session) {
+        localStorage.setItem("token", session.access_token);
         router.push("/dashboard");
       } else {
-        setError("Login failed: No session received.");
+        setError("No account found, please register first.");
       }
     } catch (err) {
       console.error("Login Error:", err);
