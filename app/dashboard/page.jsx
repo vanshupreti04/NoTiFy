@@ -7,10 +7,14 @@ import {
   IconBrandTabler,
   IconSettings,
   IconUserBolt,
-  IconPlus,
+  IconPizza,
   IconMessageCircle,
   IconShare,
+  IconChecklist,
 } from "@tabler/icons-react";
+import { AiOutlineFileText } from 'react-icons/ai';  // Icon for Notes
+import { FaRegFileExcel } from 'react-icons/fa'; 
+
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -18,14 +22,19 @@ import { cn } from "../blocks/sidebar/utils";
 import Settings from "../components/settings"; // Import the settings component
 import Home from "../components/Front"; // Import the Home component
 import InviteCollaborator from "../components/Invite"; // Import Invite Collaborator component
+import Notes from "../components/Notes";  
+import Spreadsheet from "../components/Spreadsheet";
+import Taskmanager from "../components/TaskManager";
+import Mealplanner from "../components/Mealplanner";
 
 export function Page() {
   const [open, setOpen] = useState(false);
   const [activePage, setActivePage] = useState("home"); // Track the active page (home, settings, invite)
   const [pageHistory, setPageHistory] = useState(["home"]); // History of pages visited
   const [historyIndex, setHistoryIndex] = useState(0); // Index of the current active page in the history
+  
 
-  // Links configuration
+  // Links configuration with updated buttons
   const links = [
     {
       label: "Home",
@@ -42,12 +51,36 @@ export function Page() {
       ),
     },
     {
-      label: "New Page",
+      label: "Notes", // Updated button to "Notes"
       href: "#",
       icon: (
-        <IconPlus className="text-neutral-700 dark:text-neutral-200 h-7 w-7 flex-shrink-0 ml-1" />
+        <AiOutlineFileText className="text-neutral-700 dark:text-neutral-200 h-7 w-7 flex-shrink-0 ml-1" />
       ),
-      onClick: () => {}, // Do nothing when "New Page" is clicked
+      onClick: () => handleClick("notes"), // Do nothing when "Notes" is clicked
+    },
+    {
+      label: "Spreadsheet", // Added "Spreadsheet" button
+      href: "#",
+      icon: (
+        <FaRegFileExcel  className="text-neutral-700 dark:text-neutral-200 h-7 w-7 flex-shrink-0 ml-1" />
+      ),
+      onClick: () => handleClick("spreadsheet"), // Do nothing when "Spreadsheet" is clicked
+    },
+    {
+      label: "Task Manager", // Added "Task Manager" button
+      href: "#",
+      icon: (
+        <IconChecklist className="text-neutral-700 dark:text-neutral-200 h-7 w-7 flex-shrink-0 ml-1" />
+      ),
+      onClick: () => handleClick("taskmanager"), // Do nothing when "Task Manager" is clicked
+    },
+    {
+      label: "Meal Planner", // Added "Meal Planner" button
+      href: "#",
+      icon: (
+        <IconPizza className="text-neutral-700 dark:text-neutral-200 h-7 w-7 flex-shrink-0 ml-1" />
+      ),
+      onClick: () => handleClick("mealplanner"), // Do nothing when "Meal Planner" is clicked
     },
     {
       label: "Settings",
@@ -223,6 +256,10 @@ const Dashboard = ({ activePage, handlePrevious, handleNext }) => {
           {activePage === "home" && <Home />}
           {activePage === "invitecollaborator" && <InviteCollaborator />}
           {activePage === "settings" && <Settings />}
+          {activePage === "notes" && <Notes />}
+          {activePage === "spreadsheet" && <Spreadsheet />}
+          {activePage === "taskmanager" && <Taskmanager />}
+          {activePage === "mealplanner" && <Mealplanner />}
         </div>
       </div>
     </div>

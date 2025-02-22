@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Save, User, Camera, Trash } from "lucide-react"; // Trash icon imported first
+import { Save, User, Camera, Trash, LogOut, FileText, CheckCircle, Calendar, Globe } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Settings = () => {
@@ -21,7 +21,7 @@ const Settings = () => {
       <div className="grid grid-cols-3 gap-10 w-full max-w-6xl -mt-32 translate-x-3">
         {/* Left Side Profile Card */}
         <div className="bg-black text-white shadow-lg rounded-2xl p-6 flex flex-col items-center w-full h-[500px]">
-          {/* Profile Image with Upload Feature */}
+          {/* Profile Image Upload */}
           <label htmlFor="profileImage" className="relative group w-40 h-40 rounded-full bg-gray-700 flex items-center justify-center mb-6 cursor-pointer overflow-hidden">
             {selectedImage ? (
               <img src={selectedImage} alt="Profile" className="w-full h-full object-cover rounded-full" />
@@ -76,13 +76,56 @@ const Settings = () => {
 
         {/* Right Side Cards */}
         <div className="col-span-2 flex flex-col gap-6 h-[480px]">
-          {/* Account Info Card */}
-          <div className="bg-black text-white shadow-lg rounded-2xl p-5 h-1/2">
-            <h3 className="text-md font-semibold mb-2">My xPay accounts</h3>
-            <p className="text-gray-400 text-sm">Active account: 843-809-4325</p>
-            <button className="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg text-sm">
-              Block Account
-            </button>
+          {/* Activity Card */}
+          <div className="bg-black text-white shadow-lg rounded-2xl p-5 h-1/2 flex justify-between items-start">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Activity</h3>
+
+              {/* Notes Made */}
+              <div className="flex items-center gap-2 mt-2 text-gray-300">
+                <FileText size={20} className="text-blue-400" />
+                <p className="text-sm">Notes Made: <span className="font-semibold text-white">24</span></p>
+              </div>
+
+              {/* Tasks Completed */}
+              <div className="flex items-center gap-2 mt-2 text-gray-300">
+                <CheckCircle size={20} className="text-green-400" />
+                <p className="text-sm">Tasks Completed: <span className="font-semibold text-white">15</span></p>
+              </div>
+
+              {/* Next Event */}
+              <div className="flex items-center gap-2 mt-2 text-gray-300">
+                <Calendar size={20} className="text-yellow-400" />
+                <p className="text-sm">Next Event: <span className="font-semibold text-white">March 5, 2025</span></p>
+              </div>
+            </div>
+
+            {/* Logout & Follow Us Buttons */}
+            <div className="flex flex-col gap-3">
+              {/* Logout Button (Purple & White) */}
+              <motion.a
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                href="/logout"
+                className="flex items-center gap-2 px-4 py-2 bg-[#7E22CE] hover:bg-white text-black rounded-lg text-sm transition duration-200 cursor-pointer"
+              >
+                <LogOut size={16} />
+                Logout
+              </motion.a>
+
+              {/* Follow Us Button (Purple & White) */}
+              <motion.a
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                href="https://twitter.com/yourpage"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-[#5D2EBD] text-black rounded-lg text-sm transition duration-200 cursor-pointer"
+              >
+                <Globe size={16} />
+                Follow Us
+              </motion.a>
+            </div>
           </div>
 
           {/* Trash Card */}
@@ -96,7 +139,6 @@ const Settings = () => {
               <p className="text-white text-sm opacity-50">No items found</p>
             </div>
           </div>
-
         </div>
       </div>
     </div>

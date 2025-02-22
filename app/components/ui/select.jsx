@@ -12,16 +12,19 @@ const SelectTrigger = ({ className, children, ...props }) => (
   <SelectPrimitive.Trigger
     aria-label="Select an option"
     className={cn(
-      "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground",
-      "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-      "[&>span]:line-clamp-1",
+      "flex h-10 w-full items-center justify-between rounded-md bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground",
+      "focus:outline-none focus:ring-0 focus:ring-offset-0", // No white border
+      "disabled:cursor-not-allowed disabled:opacity-50",
+      "[&>span]:line-clamp-1 space-x-2", 
       className
     )}
     {...props}
   >
-    {children}
+    <span>
+      <SelectPrimitive.Value />
+    </span>
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
+      <ChevronDown className="h-4 w-4 opacity-50 -ml-40 " />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 );
@@ -48,26 +51,27 @@ const SelectContent = ({ className, children, position = "popper", ...props }) =
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       className={cn(
-        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md",
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-white/40", // ✅ Light white border
+        "bg-black text-white shadow-md", // ✅ Black bg, white text
+        "data-[state=open]:animate-in data-[state=closed]:animate-out",
+        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-        "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-        position === "popper" &&
-          "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
+        "data-[side=bottom]:translate-y-0", // ✅ Dropdown starts right at the border
+        "mt-0", // ✅ No extra margin above dropdown
         className
       )}
       position={position}
       {...props}
     >
       <SelectScrollUpButton />
-      <SelectPrimitive.Viewport
-        className={cn(
-          "p-1",
-          position === "popper" &&
-            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
-        )}
-      >
-        {children}
+      <SelectPrimitive.Viewport className="p-1">
+        <SelectItem value="normal">Normal</SelectItem>
+        <SelectSeparator />
+        <SelectItem value="h1">Heading 1</SelectItem>
+        <SelectSeparator />
+        <SelectItem value="h2">Heading 2</SelectItem>
+        <SelectSeparator />
+        <SelectItem value="h3">Heading 3</SelectItem>
       </SelectPrimitive.Viewport>
       <SelectScrollDownButton />
     </SelectPrimitive.Content>
@@ -85,7 +89,7 @@ const SelectItem = React.memo(({ className, children, ...props }) => (
   <SelectPrimitive.Item
     className={cn(
       "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none",
-      "focus:bg-accent focus:text-accent-foreground",
+      "focus:bg-purple-600 focus:text-white", // ✅ Background on selection
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className
     )}
@@ -104,7 +108,7 @@ SelectItem.displayName = "SelectItem";
 const SelectSeparator = React.memo(({ className, ...props }) => (
   <SelectPrimitive.Separator
     role="separator"
-    className={cn("-mx-1 my-1 h-px bg-muted", className)}
+    className={cn("my-1 h-px bg-gray-500/40", className)} // ✅ Light grey partition line
     {...props}
   />
 ));

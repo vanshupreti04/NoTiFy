@@ -13,6 +13,7 @@ export function Home() {
   const [quickNote, setQuickNote] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [mounted, setMounted] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // Track if we are in the editing mode for a new note
   
   useEffect(() => {
     setMounted(true);
@@ -33,7 +34,13 @@ export function Home() {
     if (quickNote.trim()) {
       toast({ title: "Note added!", description: "Your note has been saved." });
       setQuickNote("");
+      setIsEditing(false); // Stop editing after note is saved
     }
+  };
+
+  const cancelEdit = () => {
+    setQuickNote("");
+    setIsEditing(false); // Stop editing if cancelled
   };
 
   const handleDateSelect = (date) => {
@@ -42,106 +49,111 @@ export function Home() {
   };
 
   return (
-    <div className="min-h-screen p-8 transition-colors bg-gray-50 text-gray-900">
+    <div className="min-h-screen p-8 transition-colors bg-white text-[#2C1A47]">
       <TooltipProvider>
-        <header className="flex justify-between items-center mb-8">
+        <header className="flex items-start mb-4">
           <div>
-            <h1 className="text-2xl md:text-4xl font-bold">{greeting()}, User!</h1>
-            <p className="text-sm opacity-80">
+            <h1 className="text-2xl mb-2 md:text-4xl font-bold text-[#2C1A47]">
+              {greeting()}, User!
+            </h1>
+            <p className="text-sm opacity-80 ml-1">
               {mounted ? `${currentTime.toLocaleTimeString("en-Uk", { hour12: true })} - ${currentTime.toLocaleDateString()}` : ""}
             </p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {/* Search Button with Tooltip */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <Search className="h-4 w-4 md:h-5 md:w-5" />
-                  Search
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Find your notes and tasks</TooltipContent>
-            </Tooltip>
-
-            {/* New Page Button */}
-            <Button className="flex items-center gap-2">
-              <Plus className="h-4 w-4 md:h-5 md:w-5" />
-              New Page
-            </Button>
           </div>
         </header>
 
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Quick Notes Section */}
-          <Card className="shadow-sm hover:shadow-md transition border-none bg-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
+          <Card className="shadow-sm hover:shadow-md transition border-none bg-[#2C1A47] text-white max-h-[400px] overflow-auto">
+            <CardHeader className="pb-2 text-center">
+              <CardTitle className="text-lg font-semibold flex items-center justify-center gap-2">
                 <StickyNote className="h-5 w-5 text-gray-500" /> Quick Notes
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 text-sm mb-3">
-                Jot down your ideas quickly and capture your thoughts.
+            <CardContent className="text-center">
+              {/* Add top margin to tagline */}
+              <p className="text-gray-300 text-sm mb-6">
+                Make your notes quickly and efficiently. Don't waste time!
               </p>
-              <Textarea
-                placeholder="Write something..."
-                value={quickNote}
-                onChange={(e) => setQuickNote(e.target.value)}
-                className="mb-3"
-              />
-              <Button onClick={addNote} className="w-full justify-center">
-                <Plus className="h-4 w-4 mr-2" /> Add Note
-              </Button>
+
+              {/* Conditional rendering based on whether the user is editing a note */}
+              {!isEditing ? (
+                <>
+                  <Button onClick={() => setIsEditing(true)} className="w-full mt-52 justify-center">
+                    <Plus className="h-4 w-4 mr-2" /> New Note
+                  </Button>
+                </>
+              ) : (
+                <div>
+                  <Textarea
+                    placeholder="Write something..."
+                    value={quickNote}
+                    onChange={(e) => setQuickNote(e.target.value)}
+                    className="mb-3"
+                  />
+                  <div className="flex justify-between gap-2">
+                    {/* Small buttons with colors for Save and Cancel */}
+                    <Button 
+                      onClick={cancelEdit} 
+                      className="w-1/2 justify-center text-gray-700 bg-white border border-gray-300 hover:bg-gray-100"
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      onClick={addNote} 
+                      className="w-1/2 justify-center bg-purple-600 text-white hover:bg-purple-700"
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
           {/* Tasks Section with Tabs */}
-          <Card className="shadow-sm hover:shadow-md transition border-none bg-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
+          <Card className="shadow-sm hover:shadow-md transition border-none bg-[#2C1A47] text-white max-h-[400px] overflow-auto">
+            <CardHeader className="pb-2 text-center">
+              <CardTitle className="text-lg font-semibold flex items-center justify-center gap-2">
                 <ListChecks className="h-5 w-5 text-gray-500" /> Tasks
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="text-center mb-7">
               <Tabs defaultValue="all">
-                <TabsList className="w-full flex justify-between bg-gray-200 p-1 rounded-md">
+                <TabsList className="w-full mb-14 flex justify-between bg-[#2C1A47] p-1 rounded-md">
                   <TabsTrigger value="all">All Tasks</TabsTrigger>
                   <TabsTrigger value="completed">Completed</TabsTrigger>
                 </TabsList>
                 <TabsContent value="all">
-                  <p className="text-center text-gray-400 py-4">No tasks currently.</p>
+                  <p className="text-center text-gray-400 py-6">No tasks currently.</p>
                 </TabsContent>
                 <TabsContent value="completed">
                   <p className="text-center text-gray-400 py-4">No completed tasks.</p>
                 </TabsContent>
               </Tabs>
-              <Button variant="secondary" className="mt-2 w-full justify-center">
-                <ListChecks className="h-4 w-4 mr-2" /> View All Tasks
+              <Button variant="secondary" className="mt-20 w-full justify-center">
+                <ListChecks className="h-4 w-4 mr-2" /> Manage All Tasks
               </Button>
             </CardContent>
           </Card>
 
           {/* Upcoming Events Section with Calendar */}
-          <Card className="shadow-sm hover:shadow-md transition border-none bg-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <CalendarIcon className="h-5 w-5 text-gray-500" /> Upcoming Events
+          <Card className="shadow-sm hover:shadow-md transition border-none bg-[#2C1A47] text-white max-h-[400px] overflow-auto">
+            <CardHeader className="pb-2 text-center">
+              <CardTitle className="text-lg font-semibold flex items-center justify-center gap-2">
+                <CalendarIcon className="h-5 w-5 text-purple-300" /> Upcoming Events
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 text-sm mb-3">
+            <CardContent className="text-center p-4">
+              <p className="text-gray-300 text-sm mb-7">
                 Stay updated with your schedule and never miss an event.
               </p>
               <Calendar
                 mode="single"
                 selected={selectedDate}
                 onSelect={handleDateSelect}
-                className="w-full p-2 rounded-lg border"
+                className="w-full p-2 rounded-lg border max-h-[250px]"
               />
-              <Button variant="secondary" className="mt-2 w-full justify-center">
-                <CalendarIcon className="h-4 w-4 mr-2" /> View Monthly Calendar
-              </Button>
             </CardContent>
           </Card>
         </section>
@@ -149,4 +161,5 @@ export function Home() {
     </div>
   );
 }
+
 export default Home;
