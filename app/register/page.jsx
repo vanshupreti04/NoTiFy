@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import axios from "axios";
 import { FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
@@ -18,6 +19,7 @@ const Register = () => {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // ✅ Prevent multiple submissions
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -28,18 +30,29 @@ const Register = () => {
     e.preventDefault();
     setError(null);
     setMessage(null);
+    setLoading(true); // ✅ Disable button during request
 
     try {
-      // Updated endpoint to use Supabase signup route.
-      const res = await axios.post("/api/auth/signup", user);
-      setMessage("Registration successful! Redirecting...");
+      // Log the request payload for debugging
+      console.log("Signup request payload:", user);
 
+      await axios.post("/api/auth/signup", user);
+      setMessage("Account created! Please check your email to verify your account before logging in.");
+
+      // ✅ Redirect after 3 seconds
       setTimeout(() => {
-        router.push("/dashboard");
-      }, 2000);
+        router.push("/login");
+      }, 3000);
     } catch (err) {
-      setError(err.response?.data?.error || "Something went wrong");
+      console.error("Registration Error:", err);
+      setError(err?.response?.data?.error || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleGitHubSignIn = () => {
+    window.location.href = "/api/auth/github"; // ✅ Redirect to API route for GitHub OAuth
   };
 
   return (
@@ -79,7 +92,7 @@ const Register = () => {
                 value={user.firstName}
                 onChange={handleChange}
                 required
-                className="w-1/2 text-black p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-3 focus:ring-black "
+                className="w-1/2 text-black p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-3"
                 placeholder="First Name"
               />
               <input
@@ -88,7 +101,7 @@ const Register = () => {
                 value={user.lastName}
                 onChange={handleChange}
                 required
-                className="w-1/2 text-black p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-3 focus:ring-black "
+                className="w-1/2 text-black p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-3"
                 placeholder="Last Name"
               />
             </div>
@@ -101,7 +114,7 @@ const Register = () => {
                 value={user.email}
                 onChange={handleChange}
                 required
-                className="w-full text-black p-2 border border-gray-300 rounded-md mt-1 focus:outline-none focus:ring-3 focus:ring-black "
+                className="w-full text-black p-2 border border-gray-300 rounded-md mt-1 focus:outline-none focus:ring-3"
                 placeholder="Email"
               />
             </div>
@@ -114,7 +127,7 @@ const Register = () => {
                 value={user.password}
                 onChange={handleChange}
                 required
-                className="w-full text-black p-2 border border-gray-300 rounded-md mt-1 focus:outline-none focus:ring-3 focus:ring-black"
+                className="w-full text-black p-2 border border-gray-300 rounded-md mt-1 focus:outline-none focus:ring-3"
                 placeholder="Password"
               />
               <button
@@ -129,17 +142,22 @@ const Register = () => {
             {/* Register Button */}
             <button
               type="submit"
-              className="w-full bg-white text-black p-2 rounded  border border-black hover:border-white hover:bg-black hover:text-white transition-all"
+              disabled={loading}
+              className={`w-full p-2 rounded border transition-all ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-white text-black border-black hover:border-white hover:bg-black hover:text-white"
+              }`}
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
 
             {/* Already have an account? */}
-            <p className="mt-4 text-center text-gray-300 ">
+            <p className="mt-4 text-center text-gray-300">
               Already have an account?{" "}
-              <a href="/login" className="text-blue-500">
+              <Link href="/login" className="text-blue-500">
                 Login
-              </a>
+              </Link>
             </p>
           </form>
 
@@ -149,8 +167,8 @@ const Register = () => {
           {/* Register with GitHub */}
           <button
             type="button"
-            onClick={() => console.log("Register with GitHub")}
-            className="w-full bg-gray-800 text-white p-2 rounded mt-6 flex items-center justify-center hover:bg-gray-700 "
+            onClick={handleGitHubSignIn}
+            className="w-full bg-gray-800 text-white p-2 rounded mt-6 flex items-center justify-center hover:bg-gray-700"
           >
             <FaGithub className="mr-2" />
             Register with GitHub
