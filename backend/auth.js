@@ -1,127 +1,66 @@
 import { supabase } from "./supabaseClient";
 
-// 🔹 Sign up a new user (Email & Password)
+// Sign up a new user with email, password, firstName, and lastName.
 export async function signUp(email, password, firstName, lastName) {
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: { data: { first_name: firstName, last_name: lastName } },
-  });
-
-  if (error) {
-    console.error("Sign-up error:", error.message);
-    throw new Error("Sign-up failed. Please try again.");
+  // Create a new user and include firstName, lastName, and display_name in the metadata.
+  const { user, error } = await supabase.auth.signUp(
+    { email, password },
+    { data: { firstName, lastName, display_name: `${firstName} ${lastName}` } }
+  );
+  if (error) throw error;
+  
+  if (user) {
+    // Optionally update the user metadata (to ensure the display_name is set)
+    const { error: updateError } = await supabase.auth.updateUser({
+      data: { display_name: `${firstName} ${lastName}` },
+    });
+    if (updateError) {
+      console.warn("Display name update error:", updateError);
+    }
+    // Optionally insert into "api.profiles" table so you can also track first/last names separately.
+    const { error: profileError } = await supabase
+      .from("api.profiles")
+      .insert({ id: user.id, email, firstName, lastName });
+    if (profileError) {
+      console.warn("Profile insert error:", profileError);
+    }
   }
-
-  return { message: "Check your email for verification before logging in." };
+  return user;
 }
 
-// 🔹 Sign in with Email & Password (Ensures Email is Verified)
+// Sign in an existing user.
 export async function signIn(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  
-  if (error || !data?.user) {
-    // Log detailed error for server-side debugging
-    console.warn("Sign-in error:", error?.message || "User data not found.");
-    // Return generic error message for production
-    return { error: "Invalid email or password." };
+  const { user, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+// Check if email is verified.
+  if (user && !user.email_confirmed_at) {
+    throw new Error("Please verify your email before logging in.");
   }
-
-  // 🔹 Check if email is verified
-  const { data: authUser, error: authError } = await supabase.auth.getUser();
-  if (authError) {
-    console.error("Auth error:", authError.message);
-    return { error: "Authentication error. Please try again." };
-  }
-
-  if (!authUser?.user?.email_confirmed_at) {
-    return { error: "Please verify your email before logging in." };
-  }
-  
-  // 🔹 Upsert user profile to ensure it exists
-  const profileData = {
-    id: authUser.user.id,
-    email,
-    first_name: authUser.user.user_metadata?.first_name || "",
-    last_name: authUser.user.user_metadata?.last_name || "",
-  };
-
-  const { error: profileError } = await supabase.from("profiles").upsert([profileData]).select();
-  if (profileError) {
-    console.error("Profile upsert error:", profileError.message);
-    return { error: "Profile creation failed." };
-  }
-
-  return { user: data.user, session: data.session || null, message: "Login successful" };
+  return user;
 }
 
-// 🔹 Sign out user
-export async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    console.error("Sign-out error:", error.message);
-    throw new Error("Sign-out failed.");
-  }
-}
-
-// 🔹 Get current user session
-export async function getSession() {
-  const { data, error } = await supabase.auth.getSession();
-  if (error) {
-    console.error("Session retrieval error:", error.message);
-    throw new Error("Session retrieval failed.");
-  }
+// Sign in with GitHub.
+export async function signInWithGitHub() {
+  const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'github' });
+  if (error) throw error;
   return data;
 }
 
-// 🔹 Update User Profile (Includes password & email updates)
-export async function updateProfile(userId, { email, firstName, lastName, photoUrl, password }) {
-  const { data: userData, error: userError } = await supabase.auth.getUser();
-  if (userError) {
-    console.error("User fetch error:", userError.message);
-    throw new Error("Failed to fetch user data.");
-  }
+// Sign out the current user.
+export async function signOut() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
+}
 
-  const currentUser = userData?.user;
-  const isGitHubUser = currentUser?.app_metadata?.provider === "github";
-  let updates = {};
+// Get current session.
+export function getSession() {
+  return supabase.auth.getSession();
+}
 
-  if (firstName) updates.first_name = firstName;
-  if (lastName) updates.last_name = lastName;
-  if (photoUrl) updates.photo_url = photoUrl;
-
-  // 🔹 Handle email update (only for non-GitHub users)
-  if (email) {
-    if (isGitHubUser) {
-      throw new Error("GitHub users cannot update email.");
-    }
-
-    const { error: emailError } = await supabase.auth.updateUser({ email });
-    if (emailError) {
-      console.error("Email update error:", emailError.message);
-      throw new Error("Email update failed.");
-    }
-    updates.email = email;
-  }
-
-  // 🔹 Allow GitHub users to set a password
-  if (password) {
-    const { error: passwordError } = await supabase.auth.updateUser({ password });
-    if (passwordError) {
-      console.error("Password update error:", passwordError.message);
-      throw new Error("Password update failed.");
-    }
-  }
-
-  // 🔹 Update `profiles` if there are changes
-  if (Object.keys(updates).length > 0) {
-    const { error: profileError } = await supabase.from("profiles").update(updates).eq("id", userId);
-
-    if (profileError) {
-      console.error("Profile update error:", profileError.message);
-      throw new Error("Profile update failed.");
-    }
-  }
-
-  return { message: "Profile updated successfully" };
+export async function updateProfile(userId, { email, firstName, lastName }) {
+  const { error } = await supabase
+    .from("profiles")
+    .update({ email, firstName, lastName })
+    .eq("id", userId);
+  if (error) throw error;
 }

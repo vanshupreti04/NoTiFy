@@ -25,7 +25,7 @@ import InviteCollaborator from "../components/Invite"; // Import Invite Collabor
 import Notes from "../components/Notes";  
 import Spreadsheet from "../components/Spreadsheet";
 import Taskmanager from "../components/TaskManager";
-import Mealplanner from "../components/Mealplanner";
+import Mealplanner from "../components/MealPlanner";
 
 export function Page() {
   const [open, setOpen] = useState(false);
