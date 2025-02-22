@@ -15,14 +15,14 @@ const Hero = () => {
   return (
     <section 
       className="flex flex-col md:flex-row items-center justify-center md:justify-between 
-      min-h-screen px-6 md:px-16 lg:pl-32 bg-[#000000] text-white"
+      min-h-screen px-6 md:px-16 lg:pl-32 bg-[#000000] text-white -mt-8"
     >
       {/* Left Side: Text and Buttons */}
       <div 
         ref={containerRef} 
         className="max-w-2xl text-center md:text-left flex flex-col items-center md:items-start"
       >
-        {/* Responsive Hero Title - Breaks into Two Lines for 1020px and Below */}
+        {/* Hero Title */}
         <VariableProximity
           label={t("Visualize Write \n Organize")}
           fromFontVariationSettings="'wght' 400, 'opsz' 9"
@@ -31,32 +31,31 @@ const Hero = () => {
           radius={100}
           falloff="linear"
           className="text-[clamp(32px,7vw,90px)] md:text-[clamp(40px,6vw,100px)] 
-          lg:text-[clamp(50px,7vw,110px)] font-bolder font-['Futura'] leading-tight 
-          mt-10 md:mt-0 text-center md:text-left whitespace-pre-line"
+          lg:text-[clamp(50px,7vw,110px)] font-bolder font-['Futura'] 
+          leading-[0.95] mt-10 md:mt-0 text-center md:text-left whitespace-pre-line"
         />
 
-        {/* Translated Tagline */}
+        {/* Tagline with extra space */}
         <p 
-          className="mt-4 text-[clamp(14px, 1.5vw, 20px)] md:text-[clamp(16px, 1.3vw, 22px)] 
-          text-[#AAAAAA] font-normal leading-snug text-center md:text-left"
+          className="mt-6 text-[clamp(14px, 1.5vw, 20px)] md:text-[clamp(16px, 1.3vw, 22px)] 
+          xl:text-[24px] 2xl:text-[26px] text-[#AAAAAA] font-normal leading-snug 
+          text-center md:text-left"
         >
           {t("tagline")}
         </p>
 
-        {/* Buttons - Stay in One Line on Small Screens */}
-        <div 
-          className="mt-6 flex flex-row justify-center md:justify-start space-x-3"
-        >
+        {/* Buttons with extra spacing and increased size */}
+        <div className="mt-8 flex flex-row justify-center md:justify-start space-x-4">
           <button
             onClick={() => router.push("/login")}
-            className="px-[clamp(10px,4vw,20px)] py-[clamp(6px,1.5vw,10px)] text-[clamp(12px,1.2vw,16px)] 
+            className="px-[clamp(16px,5vw,28px)] py-[clamp(10px,2vw,16px)] text-[clamp(16px,1.5vw,20px)] 
             font-medium text-black bg-[#AC6AFF] rounded-md transition-all duration-300 hover:text-white"
           >
             {t("get_started")}
           </button>
           <button
             onClick={() => router.push("/docs")}
-            className="px-[clamp(10px,4vw,20px)] py-[clamp(6px,1.5vw,10px)] text-[clamp(12px,1.2vw,16px)] 
+            className="px-[clamp(16px,5vw,28px)] py-[clamp(10px,2vw,16px)] text-[clamp(16px,1.5vw,20px)] 
             font-medium text-white border border-white rounded-md transition-all duration-300 
             hover:border-white hover:text-[#AC6AFF]"
           >
@@ -65,7 +64,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Right Side: Pixel Image (Hidden Below 820px) */}
+      {/* Right Side: Pixel Image */}
       <div 
         className="flex-shrink-0 relative mt-10 md:mt-0 md:mr-16 
         w-[clamp(200px,40vw,500px)] h-[clamp(200px,40vw,500px)] 

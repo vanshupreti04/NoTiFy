@@ -192,8 +192,6 @@ const Home = () => {
         <Hero />
       </div>
 
-
-
       <div className="-mt-[30vh] sm:-mt-5 md:-mt-6">
         <BentoGridSecondDemo />
       </div>
@@ -202,20 +200,21 @@ const Home = () => {
         <MovingText />
       </div>
 
-      <div className="mt-[10vh]">
+      <div className="-mt-[12vh] sm:-mt-5 md:-mt-6">
         <UseCase />
       </div>
 
-      <div className="mt-[30vh] pb-[10vh]">
+      <div className="-mt-[19vh] sm:-mt-5 md:-mt-20 pb-[10vh]">
         <Productivity />
       </div>
 
-      <div className="mt-[5vh] pb-[10vh]">
+      <div className="[@media(max-width:450px)]:mt-[-8vh] mt-[5vh] pb-[10vh]">
         <Testimonial />
       </div>
 
-      <div className="mt-[5vh] pb-[2vh]">
-        <hr className="border-t border-gray-100 opacity-20 w-full" />
+
+      <div className="[@media(max-width:450px)]:mt-[-6vh] mt-[5vh] pb-[2vh]">
+        <hr className="border-t-[0.5px] border-gray-100 opacity-20 w-full" />
         <Footer />
       </div>
     </div>

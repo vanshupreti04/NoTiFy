@@ -40,7 +40,7 @@ const Footer = () => {
                 width={50}
                 height={50}
               />
-              <span className="text-xl font-bold text-white mb-3">{t("notify")}</span>
+              <span className="text-3xl font-bold text-white mb-0">{t("notify")}</span>
             </div>
 
             {/* Social Icons */}
