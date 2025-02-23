@@ -106,7 +106,7 @@ const Settings = () => {
               <motion.a
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                href="/logout"
+                href="/"
                 className="flex items-center gap-2 px-4 py-2 bg-[#7E22CE] hover:bg-white text-black rounded-lg text-sm transition duration-200 cursor-pointer"
               >
                 <LogOut size={16} />

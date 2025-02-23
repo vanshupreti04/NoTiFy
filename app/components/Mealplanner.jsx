@@ -221,9 +221,9 @@ export function MealPlanner() {
             value={newMeal}
             onChange={(e) => setNewMeal(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && addMeal()}
-            className="rounded-md border-gray-300 focus-visible:ring-2 w-[150px] text-white bg-black"
+            className="rounded-md border-gray-300 focus-visible:ring-2 w-[15vw] text-white bg-black"
           />
-          <Button onClick={addMeal} className="bg-purple-600 hover:bg-purple-700 text-white px-4">
+          <Button onClick={addMeal} className="mr-5 ml-5 bg-purple-600 hover:bg-purple-700 text-white px-4">
             Add Meal
           </Button>
           <Button onClick={saveMealPlan} className="bg-green-600 hover:bg-green-700 text-white px-4">
