@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../../backend/supabaseClient";
+import { supabase } from "../../../lib/supabaseClient";
 
 export function useRealtimeData(table, initialData = []) {
   const [data, setData] = useState(initialData);

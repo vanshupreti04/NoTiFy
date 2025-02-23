@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { supabase } from "../../backend/supabaseClient";
+import { supabase } from "../../lib/supabaseClient";
 
 const Profile = () => {
   const [user, setUser] = useState(null);

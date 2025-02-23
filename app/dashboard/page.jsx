@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../blocks/sidebar/sidebar";
 import {
   IconArrowLeft,
@@ -25,7 +25,7 @@ import InviteCollaborator from "../components/Invite"; // Import Invite Collabor
 import Notes from "../components/Notes";  
 import Spreadsheet from "../components/Spreadsheet";
 import Taskmanager from "../components/TaskManager";
-import Mealplanner from "../components/MealPlanner";
+import Mealplanner from "../components/Mealplanner";
 
 export function Page() {
   const [open, setOpen] = useState(false);
@@ -33,6 +33,9 @@ export function Page() {
   const [pageHistory, setPageHistory] = useState(["home"]); // History of pages visited
   const [historyIndex, setHistoryIndex] = useState(0); // Index of the current active page in the history
   
+  useEffect(() => {
+    console.log("Dashboard page loaded");
+  }, []);
 
   // Links configuration with updated buttons
   const links = [

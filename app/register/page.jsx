@@ -1,9 +1,8 @@
-"use client"; // ✅ Required for hooks in Next.js
-
+"use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import axios from "axios";
+import { supabase } from "@/lib/supabaseClient"; // ⚡️ Import Supabase client
 import { FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
 import { Spotlight } from "../blocks/Spotlight/NewSpotlight";
@@ -19,7 +18,7 @@ const Register = () => {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false); // ✅ Prevent multiple submissions
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -30,29 +29,50 @@ const Register = () => {
     e.preventDefault();
     setError(null);
     setMessage(null);
-    setLoading(true); // ✅ Disable button during request
+    setLoading(true);
 
     try {
-      // Log the request payload for debugging
-      console.log("Signup request payload:", user);
+      // ⚡️ Direct Supabase signup
+      const { data, error } = await supabase.auth.signUp({
+        email: user.email,
+        password: user.password,
+        options: {
+          data: {
+            display_name: `${user.firstName} ${user.lastName}`,
+          },
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
 
-      await axios.post("/api/auth/signup", user);
+      if (error) throw error;
+
       setMessage("Account created! Please check your email to verify your account before logging in.");
 
-      // ✅ Redirect after 3 seconds
       setTimeout(() => {
         router.push("/login");
       }, 3000);
     } catch (err) {
       console.error("Registration Error:", err);
-      setError(err?.response?.data?.error || "Something went wrong");
+      setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGitHubSignIn = () => {
-    window.location.href = "/api/auth/github"; // ✅ Redirect to API route for GitHub OAuth
+  const handleGitHubSignIn = async () => {
+    try {
+      console.log("Initiating GitHub sign in from Register Page");
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "github",
+        options: {
+          redirectTo: "/auth/callback",
+        },
+      });
+      if (error) throw error;
+    } catch (err) {
+      console.error("GitHub Auth Error:", err);
+      setError(err.message);
+    }
   };
 
   return (
