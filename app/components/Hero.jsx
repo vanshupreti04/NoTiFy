@@ -91,8 +91,8 @@ const Hero = () => {
                 backgroundColor: "#111",
               }}
             >
-              <p className="font-extrabold text-[clamp(16px,3vw,32px)] text-white">
-                {t("pixel_transition_text")}
+              <p className="font-extrabold text-8xl text-white">
+                {t("NoTiFy")}
               </p>
             </div>
           }

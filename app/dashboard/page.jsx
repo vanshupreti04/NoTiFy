@@ -136,11 +136,11 @@ export function Page() {
           <div>
             <SidebarLink
               link={{
-                label: "Manu Arora",
+                label: "Vansh Upreti",
                 href: "#",
                 icon: (
                   <Image
-                    src="https://assets.aceternity.com/manu.png"
+                    src="/TeamImages/vansh.png"
                     className="h-10 w-10 flex-shrink-0 rounded-full"
                     width={40}
                     height={40}
