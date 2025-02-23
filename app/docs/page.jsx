@@ -116,7 +116,7 @@ const Docs = () => {
         {/* GitHub Button Positioned Below the Text */}
         <div className="text-center mt-6 max-w-6xl mx-auto">
           <a
-            href="https://github.com/vanshupreti04/Notify.git"
+            href="https://github.com/vanshupreti04/NoTiFy.git"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-black text-purple-500 hover:bg-purple-600 hover:text-white px-4 py-2 rounded-full text-lg font-semibold transition duration-300"
