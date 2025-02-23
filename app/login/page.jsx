@@ -1,9 +1,8 @@
-"use client"; // ✅ Required to use useState and useRouter in Next.js
-
+"use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import axios from "axios";
+import { supabase } from "@/lib/supabaseClient"; // ⚡️ Import Supabase client
 import { FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
 import { Spotlight } from "../blocks/Spotlight/NewSpotlight";
@@ -20,25 +19,38 @@ const Login = () => {
     setError(null);
 
     try {
-      const res = await axios.post("/api/auth/login", { email, password });
-      // Use optional chaining to avoid "undefined" errors
-      const session = res?.data?.data?.session;
-      if (session) {
-        localStorage.setItem("token", session.access_token);
-        router.push("/dashboard");
-      } else {
-        setError("No account found, please register first.");
-      }
+      // ⚡️ Direct Supabase login
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      // Redirect to dashboard on success
+      router.push("/dashboard");
     } catch (err) {
       console.error("Login Error:", err);
-      setError(err?.response?.data?.error || err.message || "Something went wrong");
+      setError(err.message || "Something went wrong");
     }
   };
 
-  const handleGitHubSignIn = () => {
-    window.location.href = "/api/auth/github"; // ✅ Redirect to API route for GitHub OAuth
-  };
+  const handleGitHubSignIn = async () => {
+    try {
+      console.log("Initiating GitHub sign in from Login Page");
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "github",
+        options: {
+          redirectTo: "/auth/callback",
+        },
+      });
 
+      if (error) throw error;
+    } catch (err) {
+      console.error("GitHub Auth Error:", err);
+      setError(err.message);
+    }
+  };
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-black overflow-hidden">
       {/* Spotlight Effect */}

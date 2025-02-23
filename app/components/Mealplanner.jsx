@@ -277,5 +277,4 @@ export function MealPlanner() {
     </div>
   );
 }
-
 export default MealPlanner;

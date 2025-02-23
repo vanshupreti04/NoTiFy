@@ -4,7 +4,7 @@ const nextConfig = {
     turbo: {}, // ✅ Enables TurboPack with default options
   },
   images: {
-    domains: ["images.unsplash.com"], // ✅ Allow Unsplash images
+    domains: ["images.unsplash.com","ltohrjagoqpdifhvbxda.supabase.co", "assets.aceternity.com"], // ✅ Allow Unsplash images
   },
   webpack: (config, { isServer }) => {
     config.module.rules.push({
